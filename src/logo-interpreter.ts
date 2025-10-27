@@ -1815,8 +1815,50 @@ export class LogoInterpreter {
                     continue;
                 }
                 if (/\s/.test(char)) {
-                    // Whitespace found - include it in the string (we're in a quoted string)
-                    // Keep collecting until we find the closing quote
+                    // Hit whitespace while in quoted string
+                    // Check if this is a word literal ("word) or multi-word string ("text")
+                    // If current string has NO spaces yet, this might be a word literal
+                    if (current.length > 1 && !current.includes(' ')) {
+                        // Look ahead to see if there's a closing quote
+                        let j = i + 1;
+                        let hasClosingQuote = false;
+                        // Look ahead through whitespace to next meaningful character
+                        while (j < code.length && /\s/.test(code[j]) && code[j] !== '\n') {
+                            j++;
+                        }
+                        // Check if we hit newline or end - word literal
+                        if (j >= code.length || code[j] === '\n') {
+                            // This is a word literal "word - end it here
+                            inString = false;
+                            if (current) {
+                                tokens.push(current);
+                                tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                                current = '';
+                            }
+                            continue;
+                        }
+                        // Check if next non-whitespace is another quote (empty space) or more text
+                        // Look for closing quote in rest of line
+                        let k = i;
+                        while (k < code.length && code[k] !== '\n') {
+                            if (code[k] === '"') {
+                                hasClosingQuote = true;
+                                break;
+                            }
+                            k++;
+                        }
+                        if (!hasClosingQuote) {
+                            // No closing quote on this line - word literal
+                            inString = false;
+                            if (current) {
+                                tokens.push(current);
+                                tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                                current = '';
+                            }
+                            continue;
+                        }
+                    }
+                    // Multi-word string - include the whitespace
                     current += char;
                     continue;
                 }
