@@ -1,5 +1,6 @@
 export declare class LogoInterpreter {
     constructor();
+    setup3DView(): void;
     reset(): void;
     pushScope(localVars?: {}): void;
     popScope(): void;

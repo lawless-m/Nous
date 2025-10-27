@@ -1,20 +1,28 @@
 # Nous - 3D Logo Interpreter
 
-A web-based Logo turtle graphics interpreter with 2D and 3D support, built with TypeScript and Three.js.
+A web-based 3D Logo turtle graphics interpreter built with TypeScript and Three.js.
 
 Branched from the [Slogo 3d branch](https://github.com/lawless-m/Slogo/tree/3d).
 
 ## Features
 
-- **2D Logo Graphics** - Classic turtle graphics with SVG rendering
-- **3D Support** - Full 3D turtle movement with Three.js rendering
+- **3D-Only Mode** - Fully immersive 3D turtle graphics environment
+- **3D Turtle Movement** - Full 3D navigation with heading, pitch, and roll
 - **3D Coordinate Queries** - `XCOR`, `YCOR`, and `ZCOR` functions
 - **3D Primitives** - Sphere, cube, cylinder, and custom mesh creation
 - **CSG Operations** - Boolean operations on 3D meshes (union, subtract, intersect)
-- **STL Export** - Export 3D models as STL files
+- **STL Export** - Export 3D models as STL files for 3D printing
 - **Modern TypeScript** - Modular architecture with type safety
+- **Orbit Controls** - Interactive 3D view with mouse controls
 
 ## New in This Version
+
+### ✅ 3D-Only Mode
+The interpreter now starts in 3D mode by default with no 2D/3D toggle. This is a dedicated 3D Logo environment:
+- Immediate 3D canvas on startup
+- Full 3D coordinate display (X, Y, Z, Heading, Pitch, Roll)
+- Always-visible STL export button
+- Simplified interface focused on 3D graphics
 
 ### ✅ ZCOR Function
 Complementing `XCOR` and `YCOR`, the new `ZCOR` function returns the turtle's Z coordinate:

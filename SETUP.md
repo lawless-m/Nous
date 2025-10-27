@@ -4,12 +4,18 @@
 
 Everything is set up and ready to use! Here's what's been configured:
 
-### 1. TypeScript Project Structure ✓
+### 1. 3D-Only Mode ✓
+- Interpreter starts in 3D mode automatically
+- No 2D/3D toggle needed
+- Full 3D coordinate display (X, Y, Z, Heading, Pitch, Roll)
+- Immediate 3D canvas on startup
+
+### 2. TypeScript Project Structure ✓
 - Modular architecture in `src/` directory
 - Type definitions for better code safety
 - ZCOR function added (complements XCOR and YCOR)
 
-### 2. GitHub Actions (Automatic Building) ✓
+### 3. GitHub Actions (Automatic Building) ✓
 Two workflows are configured:
 
 **Build TypeScript** (`.github/workflows/build-typescript.yml`)

@@ -50,8 +50,8 @@ export class LogoInterpreter {
             [128, 128, 128]  // 15: gray
         ];
 
-        // 3D Mode
-        this.is3DMode = false;
+        // 3D Mode - Always enabled (3D-only project)
+        this.is3DMode = true;
         this.scene3D = null;
         this.camera3D = null;
         this.renderer3D = null;
@@ -66,6 +66,29 @@ export class LogoInterpreter {
         // Track included URLs to prevent circular dependencies
         this.includedURLs = new Set();
         this.includeStack = []; // Stack to track current include chain for error messages
+
+        // Initialize 3D mode on startup
+        this.init3D();
+        this.setup3DView();
+    }
+
+    setup3DView() {
+        // Hide 2D canvas, show 3D canvas
+        const canvas2D = document.getElementById('canvas');
+        const canvas3D = document.getElementById('canvas3D');
+        const exportSTLButton = document.getElementById('exportSTLButton');
+        const zContainer = document.getElementById('turtleZContainer');
+        const pitchContainer = document.getElementById('turtlePitchContainer');
+        const rollContainer = document.getElementById('turtleRollContainer');
+
+        if (canvas2D) canvas2D.style.display = 'none';
+        if (canvas3D) canvas3D.style.display = 'block';
+        if (exportSTLButton) exportSTLButton.style.display = 'inline-block';
+
+        // Show Z, pitch, roll in turtle info
+        if (zContainer) zContainer.style.display = 'inline';
+        if (pitchContainer) pitchContainer.style.display = 'block';
+        if (rollContainer) rollContainer.style.display = 'block';
     }
 
     reset() {
@@ -3052,11 +3075,7 @@ SQUARE :base + SQRT 100   ; sqrt(100) = 10, so 40x40 square
         interpreter.setZoom(1.0, 0, 0);
     });
 
-    // 3D Mode Toggle
-    const toggle3DButton = document.getElementById('toggle3DButton');
-    toggle3DButton.addEventListener('click', () => {
-        interpreter.toggle3DMode();
-    });
+    // 3D Mode is always enabled - toggle removed
 
     // Export STL
     const exportSTLButton = document.getElementById('exportSTLButton');

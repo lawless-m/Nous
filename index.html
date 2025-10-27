@@ -60,13 +60,13 @@ REPEAT 4 [
                         <button id="zoomResetButton" class="btn btn-small">100%</button>
                     </div>
                     <div class="mode-toggle">
-                        <button id="toggle3DButton" class="btn btn-secondary">3D Mode</button>
-                        <button id="exportSTLButton" class="btn btn-secondary" style="display: none;">Export STL</button>
+                        <!-- 3D Mode is always enabled -->
+                        <button id="exportSTLButton" class="btn btn-secondary">Export STL</button>
                     </div>
                 </div>
                 <div class="canvas-container">
-                    <!-- 2D SVG Canvas -->
-                    <svg id="canvas" width="600" height="600">
+                    <!-- 2D SVG Canvas (hidden - 3D only mode) -->
+                    <svg id="canvas" width="600" height="600" style="display: none;">
                         <g id="drawingLayer"></g>
                         <g id="turtleLayer">
                             <g id="turtle" transform="translate(300, 300)">
@@ -74,14 +74,14 @@ REPEAT 4 [
                             </g>
                         </g>
                     </svg>
-                    <!-- 3D Canvas (hidden by default) -->
-                    <div id="canvas3D" style="display: none; width: 600px; height: 600px;"></div>
+                    <!-- 3D Canvas (always visible) -->
+                    <div id="canvas3D" style="display: block; width: 600px; height: 600px;"></div>
                 </div>
                 <div class="turtle-info">
-                    <span>Position: (<span id="turtleX">0</span>, <span id="turtleY">0</span><span id="turtleZContainer" style="display:none">, <span id="turtleZ">0</span></span>)</span>
+                    <span>Position: (<span id="turtleX">0</span>, <span id="turtleY">0</span><span id="turtleZContainer">, <span id="turtleZ">0</span></span>)</span>
                     <span>Heading: <span id="turtleHeading">0</span>°</span>
-                    <span id="turtlePitchContainer" style="display:none">Pitch: <span id="turtlePitch">0</span>°</span>
-                    <span id="turtleRollContainer" style="display:none">Roll: <span id="turtleRoll">0</span>°</span>
+                    <span id="turtlePitchContainer">Pitch: <span id="turtlePitch">0</span>°</span>
+                    <span id="turtleRollContainer">Roll: <span id="turtleRoll">0</span>°</span>
                     <span>Pen: <span id="turtlePen">Down</span></span>
                 </div>
             </div>
