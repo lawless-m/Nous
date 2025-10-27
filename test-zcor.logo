@@ -1,0 +1,39 @@
+; Test ZCOR function
+CLEAR
+HOME
+
+; Test in 2D mode (Z should be 0)
+PRINT "Testing in 2D mode:"
+PRINT [X:] XCOR
+PRINT [Y:] YCOR
+PRINT [Z:] ZCOR
+
+; Move forward and test
+FORWARD 50
+PRINT "After FORWARD 50:"
+PRINT [X:] XCOR
+PRINT [Y:] YCOR
+PRINT [Z:] ZCOR
+
+; Test in 3D mode
+PRINT "
+Switching to 3D mode..."
+; Note: In actual use, you'd click the 3D button
+; But we can still test the Z coordinate
+
+; Test with SETZ
+SETZ 100
+PRINT "After SETZ 100:"
+PRINT [X:] XCOR
+PRINT [Y:] YCOR
+PRINT [Z:] ZCOR
+
+; Test with SETXYZ
+SETXYZ 10 20 30
+PRINT "After SETXYZ 10 20 30:"
+PRINT [X:] XCOR
+PRINT [Y:] YCOR
+PRINT [Z:] ZCOR
+
+PRINT "
+ZCOR function test complete!"
