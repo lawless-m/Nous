@@ -12,7 +12,10 @@ REPEAT 36 [
 
     ; Print position every 6 iterations
     IF (REPCOUNT % 6) = 0 [
-        PRINT [Position:] XCOR YCOR ZCOR
+        PRINT "Position:"
+        PRINT XCOR
+        PRINT YCOR
+        PRINT ZCOR
     ]
 ]
 
@@ -30,5 +33,8 @@ REPEAT 36 [
     LEFT 10      ; Turn left
 ]
 
-PRINT [Final position:] XCOR YCOR ZCOR
-PRINT [3D spiral complete!]
+PRINT "Final position:"
+PRINT XCOR
+PRINT YCOR
+PRINT ZCOR
+PRINT "3D spiral complete!"

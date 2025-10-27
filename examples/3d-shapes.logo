@@ -4,22 +4,31 @@
 CLEAR
 HOME
 
-PRINT [Creating 3D shapes...]
+PRINT "Creating 3D shapes..."
 
 ; Create a sphere
 SETXYZ -100 0 0
 MAKE "s1 SPHERE 30
-PRINT [Sphere at:] XCOR YCOR ZCOR
+PRINT "Sphere at:"
+PRINT XCOR
+PRINT YCOR
+PRINT ZCOR
 
 ; Create a cube
 SETXYZ 0 0 0
 MAKE "c1 CUBE 40
-PRINT [Cube at:] XCOR YCOR ZCOR
+PRINT "Cube at:"
+PRINT XCOR
+PRINT YCOR
+PRINT ZCOR
 
 ; Create a cylinder
 SETXYZ 100 0 0
 MAKE "cyl CYLINDER 20 60
-PRINT [Cylinder at:] XCOR YCOR ZCOR
+PRINT "Cylinder at:"
+PRINT XCOR
+PRINT YCOR
+PRINT ZCOR
 
 ; Create a tower by stacking shapes vertically
 HOME
@@ -28,13 +37,16 @@ SETXYZ 0 100 0
 REPEAT 5 [
     ; Create a cube at current Z height
     MAKE "tower CUBE 30
-    PRINT [Tower level] REPCOUNT [at Z:] ZCOR
+    PRINT "Tower level"
+    PRINT REPCOUNT
+    PRINT "at Z:"
+    PRINT ZCOR
 
     ; Move up for next level
     SETZ (ZCOR + 35)
 ]
 
-PRINT [
-PRINT [3D shapes demo complete!]
-PRINT [Use mouse to rotate the view]
-PRINT [Click Export STL to save as 3D model]
+PRINT ""
+PRINT "3D shapes demo complete!"
+PRINT "Use mouse to rotate the view"
+PRINT "Click Export STL to save as 3D model"

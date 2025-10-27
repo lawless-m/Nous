@@ -4,7 +4,7 @@
 CLEAR
 HOME
 
-PRINT [Building a 3D house with BEGINFACE/ENDFACE...]
+PRINT "Building a 3D house with BEGINFACE/ENDFACE..."
 
 ; ======================================
 ; Helper procedure to create a rectangle face
@@ -24,7 +24,7 @@ END
 ; ======================================
 ; 1. Build the Floor
 ; ======================================
-PRINT [Building floor...]
+PRINT "Building floor..."
 SETPENCOLOR 100 100 100  ; Gray floor
 SETXYZ 0 0 0
 SETHEADING 90
@@ -33,7 +33,7 @@ RECTFACE 200 200
 ; ======================================
 ; 2. Build Four Walls
 ; ======================================
-PRINT [Building walls...]
+PRINT "Building walls..."
 SETPENCOLOR 200 150 100  ; Tan walls
 
 ; Front wall
@@ -93,7 +93,7 @@ ENDFACE
 ; ======================================
 ; 3. Build Roof (two triangular ends + two slopes)
 ; ======================================
-PRINT [Building roof...]
+PRINT "Building roof..."
 SETPENCOLOR 150 50 50  ; Dark red roof
 
 ; Front triangular gable
@@ -152,7 +152,7 @@ ENDFACE
 ; ======================================
 ; 4. Add Door
 ; ======================================
-PRINT [Adding door...]
+PRINT "Adding door..."
 SETPENCOLOR 80 40 20  ; Brown door
 SETXYZ 100 -100 5  ; Offset from wall
 SETHEADING 0
@@ -170,7 +170,7 @@ ENDFACE
 ; ======================================
 ; 5. Add Windows
 ; ======================================
-PRINT [Adding windows...]
+PRINT "Adding windows..."
 SETPENCOLOR 150 200 255  ; Light blue glass
 
 ; Front window 1
@@ -218,7 +218,7 @@ ENDFACE
 ; ======================================
 ; 6. Add Chimney
 ; ======================================
-PRINT [Adding chimney...]
+PRINT "Adding chimney..."
 SETPENCOLOR 120 60 40  ; Brick red
 
 SETXYZ 50 50 150
@@ -237,16 +237,16 @@ REPEAT 4 [
 ; Finished!
 ; ======================================
 HOME
-PRINT [
-PRINT [=== 3D House Complete! ===]
-PRINT [
-PRINT [Features:]
-PRINT [- Floor, 4 walls with door opening]
-PRINT [- Sloped roof with gables]
-PRINT [- Door and windows]
-PRINT [- Chimney]
-PRINT [
-PRINT [Total faces created: ~20+]
-PRINT [
-PRINT [Use mouse to rotate view]
-PRINT [Export as STL for 3D printing!]
+PRINT ""
+PRINT "=== 3D House Complete! ==="
+PRINT ""
+PRINT "Features:"
+PRINT "- Floor, 4 walls with door opening"
+PRINT "- Sloped roof with gables"
+PRINT "- Door and windows"
+PRINT "- Chimney"
+PRINT ""
+PRINT "Total faces created: ~20+"
+PRINT ""
+PRINT "Use mouse to rotate view"
+PRINT "Export as STL for 3D printing!"
