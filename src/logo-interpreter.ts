@@ -181,6 +181,7 @@ export class LogoInterpreter {
     }
 
     applyZoomAndPan() {
+        if (!this.canvas) return; // Skip if DOM elements not available
         const svg = this.canvas;
         const viewBox = `${this.panX} ${this.panY} ${600 / this.zoom} ${600 / this.zoom}`;
         svg.setAttribute('viewBox', viewBox);
@@ -228,6 +229,8 @@ export class LogoInterpreter {
     }
 
     updateTurtleDisplay() {
+        if (!this.turtleElement) return; // Skip if DOM elements not available
+
         const screenX = this.centerX + this.x;
         const screenY = this.centerY - this.y;
 
@@ -240,16 +243,25 @@ export class LogoInterpreter {
             `translate(${screenX}, ${screenY}) rotate(${rotation})`);
         this.turtleElement.style.display = this.turtleVisible ? 'block' : 'none';
 
-        document.getElementById('turtleX').textContent = Math.round(this.x);
-        document.getElementById('turtleY').textContent = Math.round(this.y);
-        document.getElementById('turtleHeading').textContent = Math.round(this.heading);
-        document.getElementById('turtlePen').textContent = this.penDown ? 'Down' : 'Up';
+        const xEl = document.getElementById('turtleX');
+        const yEl = document.getElementById('turtleY');
+        const headingEl = document.getElementById('turtleHeading');
+        const penEl = document.getElementById('turtlePen');
+
+        if (xEl) xEl.textContent = Math.round(this.x);
+        if (yEl) yEl.textContent = Math.round(this.y);
+        if (headingEl) headingEl.textContent = Math.round(this.heading);
+        if (penEl) penEl.textContent = this.penDown ? 'Down' : 'Up';
 
         // Update 3D info if in 3D mode
         if (this.is3DMode) {
-            document.getElementById('turtleZ').textContent = Math.round(this.z);
-            document.getElementById('turtlePitch').textContent = Math.round(this.pitch);
-            document.getElementById('turtleRoll').textContent = Math.round(this.roll);
+            const zEl = document.getElementById('turtleZ');
+            const pitchEl = document.getElementById('turtlePitch');
+            const rollEl = document.getElementById('turtleRoll');
+
+            if (zEl) zEl.textContent = Math.round(this.z);
+            if (pitchEl) pitchEl.textContent = Math.round(this.pitch);
+            if (rollEl) rollEl.textContent = Math.round(this.roll);
             this.updateTurtle3D();
         }
     }
@@ -1318,6 +1330,7 @@ export class LogoInterpreter {
         if (this.scene3D) return; // Already initialized
 
         const container = document.getElementById('canvas3D');
+        if (!container) return; // Skip if DOM element not available
 
         // Create scene
         this.scene3D = new THREE.Scene();
