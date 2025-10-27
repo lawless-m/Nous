@@ -45,13 +45,28 @@ src/
 
 ## Setup and Development
 
-### Install Dependencies
+### Option 1: Automatic Build with GitHub Actions ⭐ Recommended
+
+GitHub Actions will automatically build the TypeScript when you push changes:
+
+1. Push your changes to any branch
+2. GitHub Actions runs `npm run build` automatically
+3. The built `dist/` files are committed back to your branch
+4. Pull the latest changes to get the built files
+
+**No local setup required!** Just edit the TypeScript files and push.
+
+### Option 2: Build Locally
+
+If you want to build on your local machine:
+
+#### Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Build
+#### Build Once
 
 Compile TypeScript to JavaScript:
 
@@ -61,7 +76,7 @@ npm run build
 
 Output will be in the `dist/` directory.
 
-### Development Mode
+#### Development Mode
 
 Watch for changes and rebuild automatically:
 
@@ -75,9 +90,21 @@ Open `index.html` in a web browser, or use a local server:
 
 ```bash
 python3 -m http.server 8080
+# or
+npx http-server
 ```
 
 Then visit http://localhost:8080
+
+### GitHub Pages Deployment
+
+The project is also configured to deploy to GitHub Pages automatically when you push to `main`:
+
+1. Go to your repository settings
+2. Navigate to **Pages** section
+3. Under **Source**, select "GitHub Actions"
+4. Push to `main` branch
+5. Your app will be live at `https://[username].github.io/Nous/`
 
 ## Logo Commands
 
