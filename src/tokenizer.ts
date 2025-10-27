@@ -87,36 +87,10 @@ export class Tokenizer {
                     continue;
                 }
                 if (/\s/.test(char)) {
-                    // Whitespace found - peek ahead to see if there's a closing quote
-                    let j = i + 1;
-                    let foundQuote = false;
-                    // Look ahead for closing quote (but not too far - max 20 chars)
-                    while (j < code.length && j < i + 20) {
-                        if (code[j] === '"') {
-                            foundQuote = true;
-                            break;
-                        }
-                        // If we hit a line break or another quote starter without finding closing quote, stop
-                        if (code[j] === '\n' || (code[j] === '"' && code[j-1] !== ' ')) {
-                            break;
-                        }
-                        j++;
-                    }
-
-                    if (foundQuote) {
-                        // This is a multi-word string like "a ", include the space
-                        current += char;
-                        continue;
-                    } else {
-                        // This is a quoted word like "varname, end it here
-                        inString = false;
-                        if (current) {
-                            tokens.push(current);
-                            tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
-                            current = '';
-                        }
-                        continue;
-                    }
+                    // Whitespace found - include it in the string (we're in a quoted string)
+                    // Keep collecting until we find the closing quote
+                    current += char;
+                    continue;
                 }
                 // Regular character - keep collecting
                 current += char;
