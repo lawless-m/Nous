@@ -546,7 +546,7 @@ export class LogoInterpreter {
                 if (right.value === 0) throw new Error('Division by zero');
                 value = value / right.value;
                 nextIndex = right.nextIndex;
-            } else if (op.toUpperCase() === 'MOD') {
+            } else if (op === '%' || op.toUpperCase() === 'MOD') {
                 const right = this.parseExponentiation(tokens, nextIndex + 1);
                 value = value % right.value;
                 nextIndex = right.nextIndex;
@@ -1936,6 +1936,17 @@ export class LogoInterpreter {
                         continue;
                     }
                 }
+                tokens.push(char);
+                tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+            } else if (char === '+' || char === '-' || char === '*' || char === '/' || char === '%') {
+                // Handle math operators
+                if (current.trim()) {
+                    tokens.push(current.trim());
+                    tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                    current = '';
+                }
+                tokenStartLine = line;
+                tokenStartColumn = column;
                 tokens.push(char);
                 tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
             } else if (/\s/.test(char)) {
