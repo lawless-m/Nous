@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Interpreter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Logo Interpreter</h1>
+            <p>A JavaScript implementation of Logo turtle graphics using SVG</p>
+        </header>
+
+        <div class="main-content">
+            <div class="editor-section" id="editorSection">
+                <div class="toolbar">
+                    <button id="runButton" class="btn btn-primary">Run</button>
+                    <button id="stopButton" class="btn btn-danger" disabled>Stop</button>
+                    <button id="clearButton" class="btn btn-secondary">Clear Canvas</button>
+                    <button id="resetButton" class="btn btn-secondary">Reset Turtle</button>
+                    <button id="exampleButton" class="btn btn-secondary">Load Example</button>
+                    <button id="loadUrlButton" class="btn btn-secondary">Load from URL</button>
+                </div>
+
+                <div class="editor-container">
+                    <textarea id="codeEditor" placeholder="Enter Logo commands here...
+Example:
+REPEAT 4 [
+  FORWARD 100
+  RIGHT 90
+]"></textarea>
+                </div>
+
+                <div class="output-container">
+                    <div class="output-header">Output</div>
+                    <pre id="output"></pre>
+                </div>
+            </div>
+
+            <div class="resizer" id="resizer"></div>
+
+            <div class="canvas-section" id="canvasSection">
+                <div class="canvas-toolbar">
+                    <label>
+                        Pen Color: <input type="color" id="penColor" value="#000000">
+                    </label>
+                    <label>
+                        Background: <input type="color" id="bgColor" value="#2a2a2a">
+                    </label>
+                    <label>
+                        Speed: <input type="range" id="speed" min="1" max="100" value="50">
+                        <span id="speedValue">50</span>
+                    </label>
+                    <div class="zoom-controls">
+                        <button id="zoomInButton" class="btn btn-small">+</button>
+                        <button id="zoomOutButton" class="btn btn-small">-</button>
+                        <button id="zoomFitButton" class="btn btn-small">Fit</button>
+                        <button id="zoomResetButton" class="btn btn-small">100%</button>
+                    </div>
+                    <div class="mode-toggle">
+                        <button id="toggle3DButton" class="btn btn-secondary">3D Mode</button>
+                        <button id="exportSTLButton" class="btn btn-secondary" style="display: none;">Export STL</button>
+                    </div>
+                </div>
+                <div class="canvas-container">
+                    <!-- 2D SVG Canvas -->
+                    <svg id="canvas" width="600" height="600">
+                        <g id="drawingLayer"></g>
+                        <g id="turtleLayer">
+                            <g id="turtle" transform="translate(300, 300)">
+                                <polygon points="0,-10 -5,10 5,10" fill="#00aa00" stroke="#006600" stroke-width="1"/>
+                            </g>
+                        </g>
+                    </svg>
+                    <!-- 3D Canvas (hidden by default) -->
+                    <div id="canvas3D" style="display: none; width: 600px; height: 600px;"></div>
+                </div>
+                <div class="turtle-info">
+                    <span>Position: (<span id="turtleX">0</span>, <span id="turtleY">0</span><span id="turtleZContainer" style="display:none">, <span id="turtleZ">0</span></span>)</span>
+                    <span>Heading: <span id="turtleHeading">0</span>°</span>
+                    <span id="turtlePitchContainer" style="display:none">Pitch: <span id="turtlePitch">0</span>°</span>
+                    <span id="turtleRollContainer" style="display:none">Roll: <span id="turtleRoll">0</span>°</span>
+                    <span>Pen: <span id="turtlePen">Down</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-section">
+            <h2>Available Commands</h2>
+            <div class="commands-grid">
+                <div class="command-group">
+                    <h3>Movement</h3>
+                    <ul>
+                        <li><code>FORWARD n</code> or <code>FD n</code> - Move forward n pixels</li>
+                        <li><code>BACKWARD n</code> or <code>BK n</code> - Move backward n pixels</li>
+                        <li><code>LEFT n</code> or <code>LT n</code> - Turn left n degrees</li>
+                        <li><code>RIGHT n</code> or <code>RT n</code> - Turn right n degrees</li>
+                        <li><code>SETXY x y</code> - Move to position (x, y)</li>
+                        <li><code>SETX n</code> - Set X position to n</li>
+                        <li><code>SETY n</code> - Set Y position to n</li>
+                        <li><code>SETHEADING n</code> or <code>SETH n</code> - Set heading (0=right, 90=up)</li>
+                        <li><code>HOME</code> - Return to center (0, 0) facing up</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>3D Movement & Rotation</h3>
+                    <ul>
+                        <li><code>UP n</code> - Pitch up n degrees (3D mode)</li>
+                        <li><code>DOWN n</code> or <code>DN n</code> - Pitch down n degrees (3D mode)</li>
+                        <li><code>ROLLRIGHT n</code> or <code>RR n</code> - Roll right n degrees (3D mode)</li>
+                        <li><code>ROLLLEFT n</code> or <code>RL n</code> - Roll left n degrees (3D mode)</li>
+                        <li><code>SETZ n</code> - Set Z position to n (3D mode)</li>
+                        <li><code>SETXYZ x y z</code> - Move to 3D position (3D mode)</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>3D Shapes & Faces</h3>
+                    <ul>
+                        <li><code>BEGINFACE</code> - Start recording vertices for a filled polygon</li>
+                        <li><code>ENDFACE</code> - End face and render filled polygon</li>
+                        <li><code>SETFACECOLOR n</code> - Set face color from palette (0-15)</li>
+                        <li><code>SETFACERGB r g b</code> - Set face color using RGB values</li>
+                        <li><code>MAKE "m1 SPHERE 50</code> - Create sphere, store reference in variable</li>
+                        <li><code>MAKE "m2 CUBE 80</code> - Create cube, store reference in variable</li>
+                        <li><code>MAKE "m3 CYLINDER 30 100</code> - Create cylinder, store reference in variable</li>
+                        <li><code>LASTMESH</code> - Returns reference to most recently created mesh</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>CSG Operations (Boolean)</h3>
+                    <ul>
+                        <li><code>MAKE "result UNION :mesh1 :mesh2</code> - Combine two meshes</li>
+                        <li><code>MAKE "result SUBTRACT :mesh1 :mesh2</code> - Cut mesh2 from mesh1</li>
+                        <li><code>MAKE "result INTERSECT :mesh1 :mesh2</code> - Keep only overlapping volume</li>
+                        <li>Example: <code>SPHERE 50 MAKE "s1 LASTMESH CUBE 80 MAKE "c1 LASTMESH SUBTRACT :s1 :c1</code></li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Pen Control</h3>
+                    <ul>
+                        <li><code>PENUP</code> or <code>PU</code> - Lift pen (stop drawing)</li>
+                        <li><code>PENDOWN</code> or <code>PD</code> - Lower pen (start drawing)</li>
+                        <li><code>PENSIZE n</code> - Set pen width to n pixels</li>
+                        <li><code>SETPENCOLOR n</code> or <code>SETPC n</code> - Set pen color from palette (0-15)</li>
+                        <li><code>SETPENRGB r g b</code> - Set pen color using RGB values (0-255)</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Display & Shapes</h3>
+                    <ul>
+                        <li><code>CLEAR</code> - Clear all drawings</li>
+                        <li><code>HIDETURTLE</code> or <code>HT</code> - Hide the turtle</li>
+                        <li><code>SHOWTURTLE</code> or <code>ST</code> - Show the turtle</li>
+                        <li><code>CIRCLE radius</code> - Draw a circle</li>
+                        <li><code>BOX width height</code> - Draw a rectangle</li>
+                        <li><code>SQUARE size</code> - Draw a square</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Variables & Control</h3>
+                    <ul>
+                        <li><code>MAKE "var value</code> - Set variable</li>
+                        <li><code>:var</code> - Use variable value</li>
+                        <li><code>"word</code> - Quoted word (single word, no closing quote needed)</li>
+                        <li><code>"text with spaces"</code> - String literal with spaces (closing quote required)</li>
+                        <li><code>LOCAL "var</code> or <code>LOCAL [var1 var2]</code> - Declare local variable(s)</li>
+                        <li><code>REPEAT n [commands]</code> - Repeat commands n times (use REPCOUNT for iteration)</li>
+                        <li><code>DOTIMES [var count] [commands]</code> - Like REPEAT but with named variable (1 to count)</li>
+                        <li><code>WHILE condition [commands]</code> - Loop while condition is true</li>
+                        <li><code>FOR [var start end increment] [commands]</code> - Loop with counter (increment optional)</li>
+                        <li><code>TO name :param1 :param2 ... [commands] END</code> - Define procedure</li>
+                        <li><code>OUTPUT value</code> - Return value from procedure</li>
+                        <li><code>STOP</code> - Exit procedure without returning value</li>
+                        <li><code>INCLUDE "url"</code> - Load and execute Logo code from URL (build libraries!)</li>
+                        <li><code>PRINT value</code> or <code>PR value</code> - Output value to console (with newline)</li>
+                        <li><code>WRITE value</code> or <code>WR value</code> - Output value to console (without newline)</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Arithmetic & Math</h3>
+                    <ul>
+                        <li><code>+, -, *, /</code> - Basic arithmetic</li>
+                        <li><code>^</code> - Exponentiation (e.g., <code>2 ^ 3</code> = 8)</li>
+                        <li><code>MOD</code> - Modulo operation</li>
+                        <li><code>POWER base exp</code> or <code>POW base exp</code> - Exponentiation function</li>
+                        <li><code>SQRT n</code> - Square root</li>
+                        <li><code>SIN n, COS n, TAN n</code> - Trigonometry (degrees)</li>
+                        <li><code>ABS n</code> - Absolute value</li>
+                        <li><code>ROUND n, FLOOR n, CEILING n</code> - Rounding</li>
+                        <li><code>RANDOM n</code> - Random integer 0 to n-1</li>
+                        <li><code>( )</code> - Parentheses for grouping</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Comparisons</h3>
+                    <ul>
+                        <li><code>&lt;</code> - Less than</li>
+                        <li><code>&gt;</code> - Greater than</li>
+                        <li><code>=</code> - Equal to</li>
+                        <li><code>&lt;=</code> - Less than or equal</li>
+                        <li><code>&gt;=</code> - Greater than or equal</li>
+                        <li><code>&lt;&gt;</code> - Not equal</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Logical Operators</h3>
+                    <ul>
+                        <li><code>AND</code> - Logical AND</li>
+                        <li><code>OR</code> - Logical OR</li>
+                        <li><code>NOT</code> - Logical NOT</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Conditionals</h3>
+                    <ul>
+                        <li><code>IF condition [commands]</code> - Execute if true</li>
+                        <li><code>IFELSE condition [true] [false]</code> - Conditional execution</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Query Functions</h3>
+                    <ul>
+                        <li><code>XCOR</code> - Returns current X coordinate</li>
+                        <li><code>YCOR</code> - Returns current Y coordinate</li>
+                        <li><code>HEADING</code> - Returns current heading (0-360)</li>
+                        <li><code>PENDOWN?</code> or <code>PENDOWNP</code> - Returns 1 if pen is down, 0 if up</li>
+                        <li><code>PENSIZE</code> - Returns current pen size</li>
+                        <li><code>PENCOLOR</code> - Returns current pen color as list [r g b]</li>
+                        <li><code>REPCOUNT</code> - Returns current iteration number in REPEAT loop (1-indexed)</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Lists & List Operations</h3>
+                    <ul>
+                        <li><code>[item1 item2 ...]</code> - List literal</li>
+                        <li><code>FIRST list</code> - Returns first element</li>
+                        <li><code>LAST list</code> - Returns last element</li>
+                        <li><code>BUTFIRST list</code> or <code>BF list</code> - All but first element</li>
+                        <li><code>BUTLAST list</code> or <code>BL list</code> - All but last element</li>
+                        <li><code>ITEM n list</code> - Get nth element (1-indexed)</li>
+                        <li><code>COUNT list</code> - Returns list length</li>
+                        <li><code>EMPTY? list</code> - Returns 1 if empty, 0 otherwise</li>
+                        <li><code>FPUT item list</code> - Add item to front of list</li>
+                        <li><code>LPUT item list</code> - Add item to end of list</li>
+                        <li><code>LIST item1 item2</code> - Create list from items</li>
+                        <li><code>SENTENCE list1 list2</code> or <code>SE list1 list2</code> - Flatten/concatenate</li>
+                        <li><code>MEMBER? item list</code> or <code>MEMBERP item list</code> - Check if item in list</li>
+                        <li><code>POSITION item list</code> - Find 1-based index (0 if not found)</li>
+                    </ul>
+                </div>
+                <div class="command-group">
+                    <h3>Higher-Order Functions</h3>
+                    <ul>
+                        <li><code>MAP "proc list</code> - Apply procedure to each element (can be used as command or function)</li>
+                        <li><code>FILTER "pred list</code> - Keep elements where predicate is true (can be used as command or function)</li>
+                        <li><code>REDUCE "op list</code> - Reduce list to single value (can be used as command or function)</li>
+                        <li><code>APPLY "proc arglist</code> - Call procedure with argument list (can be used as command or function)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js for 3D rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+    <!-- CSG libraries for boolean operations -->
+    <script src="https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.0/build/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.16/build/index.umd.js"></script>
+
+    <!-- Resizer functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resizer = document.getElementById('resizer');
+            const editorSection = document.getElementById('editorSection');
+            const canvasSection = document.getElementById('canvasSection');
+            const mainContent = document.querySelector('.main-content');
+
+            // Only set up resizer if all elements exist
+            if (!resizer || !editorSection || !canvasSection || !mainContent) {
+                return;
+            }
+
+            let isResizing = false;
+            let startX = 0;
+            let startEditorWidth = 0;
+
+            resizer.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                startX = e.clientX;
+                startEditorWidth = editorSection.offsetWidth;
+
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+
+                const containerWidth = mainContent.offsetWidth;
+                const resizerWidth = resizer.offsetWidth;
+                const delta = e.clientX - startX;
+                const newEditorWidth = startEditorWidth + delta;
+
+                // Calculate percentages with minimum constraints
+                const minWidth = 300; // minimum width in pixels
+                const maxEditorWidth = containerWidth - minWidth - resizerWidth;
+
+                if (newEditorWidth >= minWidth && newEditorWidth <= maxEditorWidth) {
+                    const editorPercent = (newEditorWidth / containerWidth) * 100;
+                    const canvasPercent = 100 - editorPercent - ((resizerWidth / containerWidth) * 100);
+
+                    editorSection.style.flex = `0 0 ${editorPercent}%`;
+                    canvasSection.style.flex = `0 0 ${canvasPercent}%`;
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        });
+    </script>
+
+    <script src="logo.js?v=20251026-14"></script>
+</body>
+</html>
