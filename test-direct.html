@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Tokenizer Test</title>
+</head>
+<body>
+    <h1>Direct Tokenizer Test (No Module Loading)</h1>
+    <pre id="output"></pre>
+
+    <script>
+        // Inline tokenizer code to avoid ANY caching issues
+        function tokenize(code) {
+            const tokens = [];
+            const tokenMeta = [];
+            let current = '';
+            let inString = false;
+            let line = 1;
+            let column = 1;
+            let tokenStartLine = 1;
+            let tokenStartColumn = 1;
+
+            for (let i = 0; i < code.length; i++) {
+                const char = code[i];
+
+                if (char === '\n') {
+                    line++;
+                    column = 1;
+                } else {
+                    column++;
+                }
+
+                // Handle comments
+                if (char === ';' && !inString) {
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                    while (i < code.length && code[i] !== '\n') {
+                        i++;
+                        column++;
+                    }
+                    continue;
+                }
+
+                if (current === '' && char !== ' ' && char !== '\t' && char !== '\n' && char !== '\r') {
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                }
+
+                // If we're in a quoted string
+                if (inString) {
+                    if (char === '"') {
+                        // Closing quote found
+                        inString = false;
+                        if (current) {
+                            tokens.push(current);
+                            tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                            current = '';
+                        }
+                        continue;
+                    }
+                    if (/\s/.test(char)) {
+                        // Include whitespace in quoted strings
+                        current += char;
+                        continue;
+                    }
+                    current += char;
+                    continue;
+                }
+
+                // Starting a quoted string
+                if (char === '"') {
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                    inString = true;
+                    current = '"'; // Include the opening quote
+                    continue;
+                }
+
+                if (char === '[') {
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                    tokens.push('[');
+                    tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                } else if (char === ']') {
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                    tokens.push(']');
+                    tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                } else if (/\s/.test(char)) {
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                } else {
+                    current += char;
+                }
+            }
+
+            if (current.trim()) {
+                tokens.push(current.trim());
+                tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+            }
+
+            return { tokens, metadata: tokenMeta };
+        }
+
+        // TEST IT
+        const testCode = 'PRINT "This is a test message"';
+        const result = tokenize(testCode);
+
+        document.getElementById('output').textContent =
+            'Input: ' + testCode + '\n\n' +
+            'Tokens:\n' + JSON.stringify(result.tokens, null, 2) + '\n\n' +
+            'Expected:\n["PRINT", "\\"This is a test message"]\n\n' +
+            'Token count: ' + result.tokens.length + '\n' +
+            'CORRECT: ' + (result.tokens.length === 2 ? 'YES ✓' : 'NO ✗');
+    </script>
+</body>
+</html>
