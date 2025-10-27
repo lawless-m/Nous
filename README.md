@@ -161,12 +161,12 @@ Create custom filled faces (polygons) by recording turtle movements:
 **Requirements:**
 - Minimum 3 vertices (triangle)
 - Works with any 3D turtle movement (`UP`, `DOWN`, `ROLL`)
-- Uses current pen color (`SETPENCOLOR`)
+- Uses current pen color (`SETPENRGB` or `SETPENCOLOR`)
 - Faces are double-sided (visible from both angles)
 
 **Example - Simple Triangle:**
 ```logo
-SETPENCOLOR 255 0 0  ; Red
+SETPENRGB 255 0 0  ; Red
 BEGINFACE
 FORWARD 100
 LEFT 120
@@ -179,7 +179,7 @@ ENDFACE
 **Example - 3D Tilted Square:**
 ```logo
 UP 45                ; Tilt upward
-SETPENCOLOR 0 255 0  ; Green
+SETPENRGB 0 255 0  ; Green
 BEGINFACE
 REPEAT 4 [
     FORWARD 80
@@ -190,7 +190,7 @@ ENDFACE
 
 **Example - Pentagon:**
 ```logo
-SETPENCOLOR 0 0 255  ; Blue
+SETPENRGB 0 0 255  ; Blue
 BEGINFACE
 REPEAT 5 [
     FORWARD 60

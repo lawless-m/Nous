@@ -11,7 +11,7 @@ PRINT ""
 ; Example 1: Simple Triangle
 ; ======================================
 PRINT "Example 1: Creating a triangle"
-SETPENCOLOR 255 0 0  ; Red triangle
+SETPENRGB 255 0 0  ; Red triangle
 
 BEGINFACE
 FORWARD 100
@@ -30,7 +30,7 @@ PRINT ""
 ; ======================================
 HOME
 SETXYZ 150 0 0
-SETPENCOLOR 0 255 0  ; Green square
+SETPENRGB 0 255 0  ; Green square
 
 PRINT "Example 2: Creating a square"
 BEGINFACE
@@ -52,7 +52,7 @@ PRINT ""
 ; ======================================
 HOME
 SETXYZ -150 0 0
-SETPENCOLOR 0 0 255  ; Blue pentagon
+SETPENRGB 0 0 255  ; Blue pentagon
 
 PRINT "Example 3: Creating a pentagon"
 BEGINFACE
@@ -70,7 +70,7 @@ PRINT ""
 ; ======================================
 HOME
 SETXYZ 0 150 0
-SETPENCOLOR 255 255 0  ; Yellow tilted triangle
+SETPENRGB 255 255 0  ; Yellow tilted triangle
 
 PRINT "Example 4: Creating a tilted 3D triangle"
 UP 30  ; Tilt upward 30 degrees
@@ -92,7 +92,7 @@ PRINT ""
 ; ======================================
 HOME
 SETXYZ 0 -150 0
-SETPENCOLOR 255 0 255  ; Magenta hexagon
+SETPENRGB 255 0 255  ; Magenta hexagon
 
 PRINT "Example 5: Creating a hexagon"
 BEGINFACE
@@ -110,7 +110,7 @@ PRINT ""
 ; ======================================
 HOME
 SETXYZ 0 0 50  ; Elevated position
-SETPENCOLOR 200 100 50  ; Brown/orange
+SETPENRGB 200 100 50  ; Brown/orange
 
 PRINT "Example 6: Creating a pyramid from faces"
 
@@ -133,7 +133,7 @@ FORWARD 40  ; Move to apex
 
 ; Side 1
 SETXYZ 0 0 50
-SETPENCOLOR 180 90 40
+SETPENRGB 180 90 40
 BEGINFACE
 FORWARD 60
 LEFT 90
@@ -153,7 +153,7 @@ PRINT "1. BEGINFACE starts recording vertices"
 PRINT "2. Each FORWARD adds current position to the face"
 PRINT "3. ENDFACE creates filled polygon from all vertices"
 PRINT "4. Need at least 3 vertices (triangle)"
-PRINT "5. Face uses current pen color (SETPENCOLOR)"
+PRINT "5. Face uses current pen color (SETPENRGB)"
 PRINT "6. Faces are double-sided (visible from both sides)"
 PRINT "7. Works with any 3D movement (UP/DOWN/ROLL)"
 PRINT ""

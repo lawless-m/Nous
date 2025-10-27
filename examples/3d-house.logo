@@ -25,7 +25,7 @@ END
 ; 1. Build the Floor
 ; ======================================
 PRINT "Building floor..."
-SETPENCOLOR 100 100 100  ; Gray floor
+SETPENRGB 100 100 100  ; Gray floor
 SETXYZ 0 0 0
 SETHEADING 90
 RECTFACE 200 200
@@ -34,7 +34,7 @@ RECTFACE 200 200
 ; 2. Build Four Walls
 ; ======================================
 PRINT "Building walls..."
-SETPENCOLOR 200 150 100  ; Tan walls
+SETPENRGB 200 150 100  ; Tan walls
 
 ; Front wall
 SETXYZ -100 -100 0
@@ -94,7 +94,7 @@ ENDFACE
 ; 3. Build Roof (two triangular ends + two slopes)
 ; ======================================
 PRINT "Building roof..."
-SETPENCOLOR 150 50 50  ; Dark red roof
+SETPENRGB 150 50 50  ; Dark red roof
 
 ; Front triangular gable
 SETXYZ -100 -100 150
@@ -121,7 +121,7 @@ FORWARD 141.4
 ENDFACE
 
 ; Left roof slope
-SETPENCOLOR 180 60 60  ; Lighter red
+SETPENRGB 180 60 60  ; Lighter red
 SETXYZ -100 -100 150
 SETHEADING 90
 UP 45  ; Slope angle
@@ -153,7 +153,7 @@ ENDFACE
 ; 4. Add Door
 ; ======================================
 PRINT "Adding door..."
-SETPENCOLOR 80 40 20  ; Brown door
+SETPENRGB 80 40 20  ; Brown door
 SETXYZ 100 -100 5  ; Offset from wall
 SETHEADING 0
 UP 90
@@ -171,7 +171,7 @@ ENDFACE
 ; 5. Add Windows
 ; ======================================
 PRINT "Adding windows..."
-SETPENCOLOR 150 200 255  ; Light blue glass
+SETPENRGB 150 200 255  ; Light blue glass
 
 ; Front window 1
 SETXYZ -105 -60 80  ; Slightly outside wall
@@ -219,7 +219,7 @@ ENDFACE
 ; 6. Add Chimney
 ; ======================================
 PRINT "Adding chimney..."
-SETPENCOLOR 120 60 40  ; Brick red
+SETPENRGB 120 60 40  ; Brick red
 
 SETXYZ 50 50 150
 SETHEADING 90

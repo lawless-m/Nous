@@ -19,7 +19,7 @@
 
 3. **`ENDFACE`** - Creates the face
    - Connects all recorded vertices into a filled polygon
-   - Uses current pen color (`SETPENCOLOR`)
+   - Uses current pen color (`SETPENRGB` or `SETPENCOLOR`)
    - Adds the face to the 3D scene
 
 ### Requirements
@@ -34,7 +34,7 @@
 ### Triangle (3 vertices)
 
 ```logo
-SETPENCOLOR 255 0 0  ; Red
+SETPENRGB 255 0 0  ; Red
 BEGINFACE
 FORWARD 100
 LEFT 120
@@ -47,7 +47,7 @@ ENDFACE
 ### Square (4 vertices)
 
 ```logo
-SETPENCOLOR 0 255 0  ; Green
+SETPENRGB 0 255 0  ; Green
 BEGINFACE
 REPEAT 4 [
     FORWARD 80
@@ -59,7 +59,7 @@ ENDFACE
 ### Pentagon (5 vertices)
 
 ```logo
-SETPENCOLOR 0 0 255  ; Blue
+SETPENRGB 0 0 255  ; Blue
 BEGINFACE
 REPEAT 5 [
     FORWARD 60
@@ -71,7 +71,7 @@ ENDFACE
 ### Hexagon (6 vertices)
 
 ```logo
-SETPENCOLOR 255 255 0  ; Yellow
+SETPENRGB 255 255 0  ; Yellow
 BEGINFACE
 REPEAT 6 [
     FORWARD 50
@@ -85,7 +85,7 @@ ENDFACE
 ### Tilted Face (using UP/DOWN)
 
 ```logo
-SETPENCOLOR 255 0 255  ; Magenta
+SETPENRGB 255 0 255  ; Magenta
 UP 45  ; Tilt upward 45 degrees
 BEGINFACE
 REPEAT 4 [
@@ -98,7 +98,7 @@ ENDFACE
 ### Vertical Face (90 degrees up)
 
 ```logo
-SETPENCOLOR 100 200 100  ; Light green
+SETPENRGB 100 200 100  ; Light green
 UP 90  ; Face straight up (like a wall)
 BEGINFACE
 FORWARD 100
@@ -114,7 +114,7 @@ ENDFACE
 ### Complex 3D Path
 
 ```logo
-SETPENCOLOR 150 150 255  ; Light blue
+SETPENRGB 150 150 255  ; Light blue
 BEGINFACE
 FORWARD 50
 UP 30
@@ -133,14 +133,14 @@ ENDFACE
 ```logo
 TO CUBE :size
     ; Bottom face
-    SETPENCOLOR 200 200 200
+    SETPENRGB 200 200 200
     BEGINFACE
     REPEAT 4 [FORWARD :size LEFT 90]
     ENDFACE
 
     ; Top face
     SETZ :size
-    SETPENCOLOR 180 180 180
+    SETPENRGB 180 180 180
     BEGINFACE
     REPEAT 4 [FORWARD :size LEFT 90]
     ENDFACE
@@ -149,7 +149,7 @@ TO CUBE :size
     ; Four side faces
     REPEAT 4 [
         UP 90
-        SETPENCOLOR 160 160 160
+        SETPENRGB 160 160 160
         BEGINFACE
         FORWARD :size
         LEFT 90
@@ -180,14 +180,14 @@ TO PYRAMID :size :height
     MAKE "apex_z :height
 
     ; Base
-    SETPENCOLOR 200 150 100
+    SETPENRGB 200 150 100
     BEGINFACE
     REPEAT 4 [FORWARD :size LEFT 90]
     ENDFACE
 
     ; Four triangular sides
     REPEAT 4 [
-        SETPENCOLOR 180 130 80
+        SETPENRGB 180 130 80
         BEGINFACE
         FORWARD :size
         SETXYZ :apex_x :apex_y :apex_z
@@ -216,7 +216,7 @@ TO RECTFACE :width :height
 END
 
 ; Usage:
-SETPENCOLOR 255 0 0
+SETPENRGB 255 0 0
 RECTFACE 100 50
 ```
 
@@ -243,9 +243,9 @@ END
 
 Use different colors for different parts:
 ```logo
-SETPENCOLOR 100 100 100  ; Gray for floors
-SETPENCOLOR 200 150 100  ; Tan for walls
-SETPENCOLOR 150 50 50    ; Dark red for roofs
+SETPENRGB 100 100 100  ; Gray for floors
+SETPENRGB 200 150 100  ; Tan for walls
+SETPENRGB 150 50 50    ; Dark red for roofs
 ```
 
 ### 4. Combine with Primitives
@@ -312,7 +312,7 @@ ENDFACE
 ### ✅ Correct:
 
 ```logo
-SETPENCOLOR 255 0 0  ; Set color BEFORE BEGINFACE
+SETPENRGB 255 0 0  ; Set color BEFORE BEGINFACE
 BEGINFACE
 REPEAT 4 [FORWARD 50 LEFT 90]
 ENDFACE
@@ -358,7 +358,7 @@ TO CURVED_FACE :radius :segments
 END
 
 ; Create a circular face with 20 segments
-SETPENCOLOR 100 150 255
+SETPENRGB 100 150 255
 CURVED_FACE 50 20
 ```
 
@@ -368,7 +368,7 @@ CURVED_FACE 50 20
 ; Checkerboard pattern
 REPEAT 4 [
     REPEAT 4 [
-        SETPENCOLOR (REPCOUNT % 2) * 255 (REPCOUNT % 2) * 255 (REPCOUNT % 2) * 255
+        SETPENRGB (REPCOUNT % 2) * 255 (REPCOUNT % 2) * 255 (REPCOUNT % 2) * 255
         BEGINFACE
         REPEAT 4 [FORWARD 25 LEFT 90]
         ENDFACE
@@ -383,7 +383,7 @@ REPEAT 4 [
 ```logo
 TO TOWER :levels :size
     REPEAT :levels [
-        SETPENCOLOR (200 - REPCOUNT * 20) 100 50
+        SETPENRGB (200 - REPCOUNT * 20) 100 50
         REPEAT 4 [
             UP 90
             BEGINFACE
@@ -456,7 +456,7 @@ ENDFACE
 
 **Example:**
 ```logo
-SETPENCOLOR 255 0 0
+SETPENRGB 255 0 0
 BEGINFACE
 REPEAT 6 [FORWARD 40 LEFT 60]
 ENDFACE
@@ -467,7 +467,8 @@ ENDFACE
 - `SPHERE` - Create spherical primitive
 - `CUBE` - Create cube primitive
 - `CYLINDER` - Create cylinder primitive
-- `SETPENCOLOR` - Set face color
+- `SETPENRGB` - Set face color with RGB values (0-255)
+- `SETPENCOLOR` - Set face color from palette (0-15)
 - `XCOR`, `YCOR`, `ZCOR` - Query position
 - `SETXYZ` - Set position directly
 
