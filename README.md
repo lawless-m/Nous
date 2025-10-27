@@ -147,7 +147,81 @@ The project is also configured to deploy to GitHub Pages automatically when you 
 - `SPHERE radius` - Create sphere
 - `CUBE size` - Create cube
 - `CYLINDER radius height` - Create cylinder
-- `BEGINFACE` / `ENDFACE` - Create custom filled face
+
+### Custom 3D Faces
+**`BEGINFACE` / `ENDFACE`** - Create custom filled 3D polygons
+
+Create custom filled faces (polygons) by recording turtle movements:
+
+1. **`BEGINFACE`** - Start recording vertices
+2. Move the turtle with `FORWARD`, `LEFT`, `RIGHT`, etc.
+3. Each position is added as a vertex
+4. **`ENDFACE`** - Create filled face from all recorded vertices
+
+**Requirements:**
+- Minimum 3 vertices (triangle)
+- Works with any 3D turtle movement (`UP`, `DOWN`, `ROLL`)
+- Uses current pen color (`SETPENCOLOR`)
+- Faces are double-sided (visible from both angles)
+
+**Example - Simple Triangle:**
+```logo
+SETPENCOLOR 255 0 0  ; Red
+BEGINFACE
+FORWARD 100
+LEFT 120
+FORWARD 100
+LEFT 120
+FORWARD 100
+ENDFACE
+```
+
+**Example - 3D Tilted Square:**
+```logo
+UP 45                ; Tilt upward
+SETPENCOLOR 0 255 0  ; Green
+BEGINFACE
+REPEAT 4 [
+    FORWARD 80
+    LEFT 90
+]
+ENDFACE
+```
+
+**Example - Pentagon:**
+```logo
+SETPENCOLOR 0 0 255  ; Blue
+BEGINFACE
+REPEAT 5 [
+    FORWARD 60
+    LEFT 72  ; 360/5 = 72 degrees
+]
+ENDFACE
+```
+
+**Pro Tip:** Create complex 3D structures by combining multiple faces:
+```logo
+; Create a pyramid
+TO PYRAMID :size
+    ; Base
+    BEGINFACE
+    REPEAT 4 [FORWARD :size LEFT 90]
+    ENDFACE
+
+    ; Four triangular sides
+    REPEAT 4 [
+        BEGINFACE
+        FORWARD :size
+        LEFT 90
+        FORWARD :size
+        SETXYZ (XCOR + :size/2) (YCOR + :size/2) (ZCOR + :size)
+        ENDFACE
+        RIGHT 90
+    ]
+END
+```
+
+See `examples/beginface-endface.logo` and `examples/3d-house.logo` for complete examples.
 
 ### CSG Operations
 - `UNION mesh1 mesh2` - Boolean union

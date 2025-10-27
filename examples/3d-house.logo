@@ -1,0 +1,252 @@
+; 3D House using BEGINFACE/ENDFACE
+; Build a complete 3D house with walls, roof, door, and windows
+
+CLEAR
+HOME
+
+PRINT [Building a 3D house with BEGINFACE/ENDFACE...]
+
+; ======================================
+; Helper procedure to create a rectangle face
+; ======================================
+TO RECTFACE :width :height
+    BEGINFACE
+    FORWARD :width
+    LEFT 90
+    FORWARD :height
+    LEFT 90
+    FORWARD :width
+    LEFT 90
+    FORWARD :height
+    ENDFACE
+END
+
+; ======================================
+; 1. Build the Floor
+; ======================================
+PRINT [Building floor...]
+SETPENCOLOR 100 100 100  ; Gray floor
+SETXYZ 0 0 0
+SETHEADING 90
+RECTFACE 200 200
+
+; ======================================
+; 2. Build Four Walls
+; ======================================
+PRINT [Building walls...]
+SETPENCOLOR 200 150 100  ; Tan walls
+
+; Front wall
+SETXYZ -100 -100 0
+SETHEADING 90
+UP 90  ; Face upward
+RECTFACE 200 150
+
+; Back wall
+SETXYZ -100 100 0
+SETHEADING 90
+UP 90
+RECTFACE 200 150
+
+; Left wall
+SETXYZ -100 -100 0
+SETHEADING 0
+UP 90
+RECTFACE 200 150
+
+; Right wall (with door opening - split wall)
+SETXYZ 100 -100 0
+SETHEADING 0
+UP 90
+
+; Right wall - lower left section
+BEGINFACE
+FORWARD 80
+LEFT 90
+FORWARD 80
+LEFT 90
+FORWARD 80
+LEFT 90
+FORWARD 80
+ENDFACE
+
+; Right wall - upper section
+SETXYZ 100 -100 80
+SETHEADING 0
+UP 90
+RECTFACE 200 70
+
+; Right wall - lower right section
+SETXYZ 100 50 0
+SETHEADING 0
+UP 90
+BEGINFACE
+FORWARD 50
+LEFT 90
+FORWARD 80
+LEFT 90
+FORWARD 50
+LEFT 90
+FORWARD 80
+ENDFACE
+
+; ======================================
+; 3. Build Roof (two triangular ends + two slopes)
+; ======================================
+PRINT [Building roof...]
+SETPENCOLOR 150 50 50  ; Dark red roof
+
+; Front triangular gable
+SETXYZ -100 -100 150
+SETHEADING 90
+UP 90
+BEGINFACE
+FORWARD 200         ; Base of triangle
+LEFT 135
+FORWARD 141.4       ; Hypotenuse (100*sqrt(2))
+LEFT 90
+FORWARD 141.4       ; Other side
+ENDFACE
+
+; Back triangular gable
+SETXYZ -100 100 150
+SETHEADING 90
+UP 90
+BEGINFACE
+FORWARD 200
+LEFT 135
+FORWARD 141.4
+LEFT 90
+FORWARD 141.4
+ENDFACE
+
+; Left roof slope
+SETPENCOLOR 180 60 60  ; Lighter red
+SETXYZ -100 -100 150
+SETHEADING 90
+UP 45  ; Slope angle
+BEGINFACE
+FORWARD 200
+LEFT 90
+FORWARD 141.4  ; Sloped length
+LEFT 90
+FORWARD 200
+LEFT 90
+FORWARD 141.4
+ENDFACE
+
+; Right roof slope
+SETXYZ -100 100 150
+SETHEADING 90
+DOWN 45  ; Opposite slope
+BEGINFACE
+FORWARD 200
+RIGHT 90
+FORWARD 141.4
+RIGHT 90
+FORWARD 200
+RIGHT 90
+FORWARD 141.4
+ENDFACE
+
+; ======================================
+; 4. Add Door
+; ======================================
+PRINT [Adding door...]
+SETPENCOLOR 80 40 20  ; Brown door
+SETXYZ 100 -100 5  ; Offset from wall
+SETHEADING 0
+UP 90
+BEGINFACE
+FORWARD 70
+LEFT 90
+FORWARD 75
+LEFT 90
+FORWARD 70
+LEFT 90
+FORWARD 75
+ENDFACE
+
+; ======================================
+; 5. Add Windows
+; ======================================
+PRINT [Adding windows...]
+SETPENCOLOR 150 200 255  ; Light blue glass
+
+; Front window 1
+SETXYZ -105 -60 80  ; Slightly outside wall
+SETHEADING 0
+UP 90
+BEGINFACE
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; Front window 2
+SETXYZ -105 20 80
+SETHEADING 0
+UP 90
+BEGINFACE
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; Side windows (left and right)
+SETXYZ -60 -105 80
+SETHEADING 90
+UP 90
+BEGINFACE
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; ======================================
+; 6. Add Chimney
+; ======================================
+PRINT [Adding chimney...]
+SETPENCOLOR 120 60 40  ; Brick red
+
+SETXYZ 50 50 150
+SETHEADING 90
+
+; Four sides of chimney
+REPEAT 4 [
+    UP 90
+    RECTFACE 20 60
+    DOWN 90
+    SETXYZ (XCOR + 20) YCOR ZCOR
+    RIGHT 90
+]
+
+; ======================================
+; Finished!
+; ======================================
+HOME
+PRINT [
+PRINT [=== 3D House Complete! ===]
+PRINT [
+PRINT [Features:]
+PRINT [- Floor, 4 walls with door opening]
+PRINT [- Sloped roof with gables]
+PRINT [- Door and windows]
+PRINT [- Chimney]
+PRINT [
+PRINT [Total faces created: ~20+]
+PRINT [
+PRINT [Use mouse to rotate view]
+PRINT [Export as STL for 3D printing!]
