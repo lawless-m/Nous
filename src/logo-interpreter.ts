@@ -2193,6 +2193,12 @@ export class LogoInterpreter {
                             this.x = x.value;
                             this.y = y.value;
                             this.z = z.value;
+
+                            // If building a face and pen is down, add this vertex
+                            if (this.faceVertices.length > 0 && this.faceVertices[0] !== null && this.penDown) {
+                                this.faceVertices.push([this.x, this.y, this.z]);
+                            }
+
                             this.updateTurtleDisplay();
                             i = z.nextIndex - 1;
                         }
