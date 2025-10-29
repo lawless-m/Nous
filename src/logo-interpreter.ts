@@ -2138,6 +2138,24 @@ export class LogoInterpreter {
                         }
                         break;
 
+                    case 'SETPITCH':
+                        {
+                            const { value, nextIndex } = this.getNextValue(tokens, i + 1);
+                            this.pitch = value;
+                            this.updateTurtleDisplay();
+                            i = nextIndex - 1;
+                        }
+                        break;
+
+                    case 'SETROLL':
+                        {
+                            const { value, nextIndex } = this.getNextValue(tokens, i + 1);
+                            this.roll = value;
+                            this.updateTurtleDisplay();
+                            i = nextIndex - 1;
+                        }
+                        break;
+
                     case 'ROLLRIGHT':
                     case 'RR':
                         {
