@@ -1734,8 +1734,8 @@ export class LogoInterpreter {
                 tokens.push(char);
                 tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
             }
-            else if (char === '+' || char === '-' || char === '*' || char === '/' || char === '%') {
-                // Handle math operators
+            else if (char === '+' || char === '*' || char === '/' || char === '%') {
+                // Handle math operators (not - which could be negative number)
                 if (current.trim()) {
                     tokens.push(current.trim());
                     tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
@@ -1745,6 +1745,29 @@ export class LogoInterpreter {
                 tokenStartColumn = column;
                 tokens.push(char);
                 tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+            }
+            else if (char === '-') {
+                // Handle minus: could be subtraction operator or negative number
+                // If followed by digit and we don't have a current token, it's a negative number
+                const nextChar = i + 1 < code.length ? code[i + 1] : '';
+                if (current === '' && /\d/.test(nextChar)) {
+                    // Negative number - start building the token
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                    current = '-';
+                }
+                else {
+                    // Subtraction operator
+                    if (current.trim()) {
+                        tokens.push(current.trim());
+                        tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                        current = '';
+                    }
+                    tokenStartLine = line;
+                    tokenStartColumn = column;
+                    tokens.push(char);
+                    tokenMeta.push({ line: tokenStartLine, column: tokenStartColumn });
+                }
             }
             else if (/\s/.test(char)) {
                 // Always split tokens on whitespace, even inside brackets
