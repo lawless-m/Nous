@@ -1,0 +1,90 @@
+; Turtle-based 3D Drawing Test
+; Tests if LEFT/RIGHT work correctly when turtle is pitched
+; Three.js coordinates: X=red (left/right), Y=green (up/down), Z=blue (forward/back)
+
+CLEAR
+HOME
+
+PRINT "Testing 3D turtle rotation..."
+PRINT ""
+
+; Test 1: Draw a square on the ground (should work with old code too)
+PRINT "Test 1: Square on ground plane (XZ)"
+SETPENRGB 255 0 0
+PENDOWN
+REPEAT 4 [
+    FORWARD 50
+    RIGHT 90
+]
+PENUP
+
+PRINT "Test 1 complete"
+PRINT ""
+
+; Test 2: Pitch up 90 degrees and draw a vertical square
+; This tests if LEFT/RIGHT rotate around the turtle's local up vector
+PRINT "Test 2: Pitch up 90 degrees, draw vertical square (XY)"
+HOME
+PENUP
+FORWARD 100
+PENDOWN
+
+SETPENRGB 0 255 0
+UP 90  ; Pitch up 90 degrees - now facing straight up
+
+; Now LEFT should rotate in the XY plane (vertical square)
+REPEAT 4 [
+    FORWARD 50
+    LEFT 90
+]
+PENUP
+
+PRINT "Test 2 complete"
+PRINT ""
+
+; Test 3: Pitch up 45 degrees and draw a tilted square
+PRINT "Test 3: Pitch up 45 degrees, draw tilted square"
+HOME
+PENUP
+FORWARD 200
+PENDOWN
+
+SETPENRGB 0 0 255
+UP 45  ; Pitch up 45 degrees
+
+; This should create a square tilted at 45 degrees
+REPEAT 4 [
+    FORWARD 50
+    LEFT 90
+]
+PENUP
+
+PRINT "Test 3 complete"
+PRINT ""
+
+; Test 4: Use BEGINFACE with turtle-based drawing
+PRINT "Test 4: Create face using turtle movements while pitched"
+HOME
+PENUP
+FORWARD 300
+PENDOWN
+
+SETPENRGB 255 255 0
+UP 90  ; Pitch straight up
+
+BEGINFACE
+REPEAT 4 [
+    FORWARD 60
+    LEFT 90
+]
+ENDFACE
+
+PRINT "Test 4 complete"
+PRINT ""
+
+PRINT "All tests complete!"
+PRINT "Expected results:"
+PRINT "- Test 1: Red square on ground (XZ plane)"
+PRINT "- Test 2: Green vertical square (XY plane)"
+PRINT "- Test 3: Blue square tilted at 45 degrees"
+PRINT "- Test 4: Yellow filled square (vertical)"
