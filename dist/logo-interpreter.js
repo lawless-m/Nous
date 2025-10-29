@@ -243,12 +243,14 @@ export class LogoInterpreter {
         const startZ = this.z;
         if (this.is3DMode) {
             // 3D movement - use heading, pitch, and roll
+            // Three.js convention: X=left/right, Y=up/down, Z=forward/back
             const headingRad = this.heading * Math.PI / 180;
             const pitchRad = this.pitch * Math.PI / 180;
             // Calculate 3D direction vector
+            // heading controls XZ plane (horizontal), pitch controls Y (vertical)
             const dx = Math.cos(pitchRad) * Math.cos(headingRad);
-            const dy = Math.cos(pitchRad) * Math.sin(headingRad);
-            const dz = Math.sin(pitchRad);
+            const dy = Math.sin(pitchRad); // Y is vertical in Three.js
+            const dz = Math.cos(pitchRad) * Math.sin(headingRad);
             this.x += distance * dx;
             this.y += distance * dy;
             this.z += distance * dz;

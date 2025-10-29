@@ -1,5 +1,6 @@
 ; Simple Cube Test
 ; Draw a cube using BEGINFACE/ENDFACE for each face
+; Three.js coordinates: X=left/right, Y=up/down, Z=forward/back
 
 CLEAR
 HOME
@@ -9,27 +10,27 @@ PRINT "Drawing a simple cube..."
 ; Face size
 MAKE "size 100
 
-; Bottom face (on XY plane at Z=0)
-PRINT "Bottom face..."
+; Bottom face (XZ plane at Y=0)
+PRINT "Bottom face (red)..."
 SETPENRGB 255 0 0  ; Red
 SETXYZ 0 0 0
 SETHEADING 0
 SETPITCH 0
 SETROLL 0
 BEGINFACE
-FORWARD :size
-LEFT 90
-FORWARD :size
-LEFT 90
-FORWARD :size
-LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in +X
+LEFT 90            ; Turn to face +Z
+FORWARD :size       ; Move in +Z
+LEFT 90            ; Turn to face -X
+FORWARD :size       ; Move in -X
+LEFT 90            ; Turn to face -Z
+FORWARD :size       ; Move in -Z
 ENDFACE
 
-; Top face (on XY plane at Z=100)
-PRINT "Top face..."
+; Top face (XZ plane at Y=100)
+PRINT "Top face (green)..."
 SETPENRGB 0 255 0  ; Green
-SETXYZ 0 0 :size
+SETXYZ 0 :size 0
 SETHEADING 0
 SETPITCH 0
 SETROLL 0
@@ -43,28 +44,30 @@ LEFT 90
 FORWARD :size
 ENDFACE
 
-; Front face (on XZ plane, facing +Y)
-PRINT "Front face..."
+; Front face (XY plane, facing camera)
+PRINT "Front face (blue)..."
 SETPENRGB 0 0 255  ; Blue
 SETXYZ 0 0 0
 SETHEADING 0
-SETPITCH 90  ; Pitch up to draw on XZ plane
+SETPITCH 90  ; Pitch up to draw vertically
+SETROLL 0
 BEGINFACE
-FORWARD :size
+FORWARD :size       ; Move in +X
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in +Y
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in -X
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in -Y
 ENDFACE
 
-; Back face (on XZ plane, facing -Y)
-PRINT "Back face..."
+; Back face (XY plane at Z=100)
+PRINT "Back face (yellow)..."
 SETPENRGB 255 255 0  ; Yellow
-SETXYZ 0 :size 0
+SETXYZ 0 0 :size
 SETHEADING 0
 SETPITCH 90
+SETROLL 0
 BEGINFACE
 FORWARD :size
 LEFT 90
@@ -75,28 +78,30 @@ LEFT 90
 FORWARD :size
 ENDFACE
 
-; Left face (on YZ plane, facing +X)
-PRINT "Left face..."
+; Left face (YZ plane at X=0)
+PRINT "Left face (magenta)..."
 SETPENRGB 255 0 255  ; Magenta
 SETXYZ 0 0 0
-SETHEADING 90
-SETPITCH 90
+SETHEADING 90       ; Face +Z
+SETPITCH 90        ; Pitch up
+SETROLL 0
 BEGINFACE
-FORWARD :size
+FORWARD :size       ; Move in +Z
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in +Y
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in -Z
 LEFT 90
-FORWARD :size
+FORWARD :size       ; Move in -Y
 ENDFACE
 
-; Right face (on YZ plane, facing -X)
-PRINT "Right face..."
+; Right face (YZ plane at X=100)
+PRINT "Right face (cyan)..."
 SETPENRGB 0 255 255  ; Cyan
 SETXYZ :size 0 0
 SETHEADING 90
 SETPITCH 90
+SETROLL 0
 BEGINFACE
 FORWARD :size
 LEFT 90
@@ -107,4 +112,4 @@ LEFT 90
 FORWARD :size
 ENDFACE
 
-PRINT "Cube complete! Rotate the view to see all faces."
+PRINT "Cube complete! Use mouse to rotate the view."
