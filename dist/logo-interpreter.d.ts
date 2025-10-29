@@ -13,6 +13,8 @@ export declare class LogoInterpreter {
     zoomToFit(): void;
     updateTurtleDisplay(): void;
     forward(distance: any): void;
+    rotateVector(vec: any, axis: any, angleDeg: any): number[];
+    recomputeDirectionVectors(): void;
     backward(distance: any): void;
     left(angle: any): void;
     right(angle: any): void;

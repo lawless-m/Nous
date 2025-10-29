@@ -89,6 +89,11 @@ export class LogoInterpreter {
         this.heading = 90; // Start facing up like C# version (0=right, 90=up)
         this.pitch = 0; // 3D rotation around X-axis
         this.roll = 0; // 3D rotation around forward axis
+        // 3D orientation vectors (for proper turtle rotation in 3D)
+        // Initialize based on heading=90, pitch=0, roll=0 (facing +Z)
+        this.forwardVec = [0, 0, 1]; // facing +Z initially
+        this.upVec = [0, 1, 0]; // up is +Y
+        this.rightVec = [1, 0, 0]; // right is +X
         this.penDown = true;
         this.penColor = '#000000';
         this.penColorRGB = [0, 0, 0]; // Store RGB values for PENCOLOR query
@@ -242,18 +247,10 @@ export class LogoInterpreter {
         const startY = this.y;
         const startZ = this.z;
         if (this.is3DMode) {
-            // 3D movement - use heading, pitch, and roll
-            // Three.js convention: X=left/right, Y=up/down, Z=forward/back
-            const headingRad = this.heading * Math.PI / 180;
-            const pitchRad = this.pitch * Math.PI / 180;
-            // Calculate 3D direction vector
-            // heading controls XZ plane (horizontal), pitch controls Y (vertical)
-            const dx = Math.cos(pitchRad) * Math.cos(headingRad);
-            const dy = Math.sin(pitchRad); // Y is vertical in Three.js
-            const dz = Math.cos(pitchRad) * Math.sin(headingRad);
-            this.x += distance * dx;
-            this.y += distance * dy;
-            this.z += distance * dz;
+            // 3D movement - use forward direction vector
+            this.x += distance * this.forwardVec[0];
+            this.y += distance * this.forwardVec[1];
+            this.z += distance * this.forwardVec[2];
             // Record vertex if building a face
             if (this.faceVertices.length > 0 && this.faceVertices[0] !== null) {
                 this.faceVertices.push([this.x, this.y, this.z]);
@@ -273,11 +270,60 @@ export class LogoInterpreter {
         }
         this.updateTurtleDisplay();
     }
+    // Helper: Rotate a 3D vector around an axis by angle (in degrees)
+    rotateVector(vec, axis, angleDeg) {
+        const angleRad = angleDeg * Math.PI / 180;
+        const c = Math.cos(angleRad);
+        const s = Math.sin(angleRad);
+        const t = 1 - c;
+        // Normalize axis
+        const len = Math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+        const ax = axis[0] / len;
+        const ay = axis[1] / len;
+        const az = axis[2] / len;
+        // Rodrigues' rotation formula
+        const x = vec[0], y = vec[1], z = vec[2];
+        const dot = ax * x + ay * y + az * z;
+        return [
+            t * ax * dot + c * x + s * (ay * z - az * y),
+            t * ay * dot + c * y + s * (az * x - ax * z),
+            t * az * dot + c * z + s * (ax * y - ay * x)
+        ];
+    }
+    // Helper: Recompute direction vectors from heading/pitch/roll
+    recomputeDirectionVectors() {
+        const headingRad = this.heading * Math.PI / 180;
+        const pitchRad = this.pitch * Math.PI / 180;
+        const rollRad = this.roll * Math.PI / 180;
+        // Start with base vectors
+        // Heading 90 = facing +Z, heading 0 = facing +X
+        const baseForward = [
+            Math.cos(headingRad),
+            0,
+            Math.sin(headingRad)
+        ];
+        // Apply pitch (rotate around right axis)
+        const baseRight = [
+            -Math.sin(headingRad),
+            0,
+            Math.cos(headingRad)
+        ];
+        this.forwardVec = this.rotateVector(baseForward, baseRight, this.pitch);
+        let upVec = [0, 1, 0]; // Start with world up
+        upVec = this.rotateVector(upVec, baseRight, this.pitch);
+        // Apply roll (rotate around forward)
+        this.rightVec = this.rotateVector(baseRight, this.forwardVec, this.roll);
+        this.upVec = this.rotateVector(upVec, this.forwardVec, this.roll);
+    }
     backward(distance) {
         this.forward(-distance);
     }
     left(angle) {
-        this.heading += angle; // Counter-clockwise rotation
+        // In 3D: rotate around the turtle's up vector
+        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.upVec, angle);
+        // Update heading for display (approximate)
+        this.heading += angle;
         while (this.heading < 0)
             this.heading += 360;
         while (this.heading >= 360)
@@ -285,7 +331,11 @@ export class LogoInterpreter {
         this.updateTurtleDisplay();
     }
     right(angle) {
-        this.heading -= angle; // Clockwise rotation
+        // In 3D: rotate around the turtle's up vector (opposite direction)
+        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, -angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.upVec, -angle);
+        // Update heading for display (approximate)
+        this.heading -= angle;
         while (this.heading < 0)
             this.heading += 360;
         while (this.heading >= 360)
@@ -298,6 +348,7 @@ export class LogoInterpreter {
             this.heading += 360;
         while (this.heading >= 360)
             this.heading -= 360;
+        this.recomputeDirectionVectors();
         this.updateTurtleDisplay();
     }
     // Collect tokens for an expression (stops at keywords or brackets)
@@ -1317,6 +1368,10 @@ export class LogoInterpreter {
         this.turtle3D.visible = this.turtleVisible;
     }
     up(angle) {
+        // In 3D: rotate around the turtle's right vector (pitch up)
+        this.forwardVec = this.rotateVector(this.forwardVec, this.rightVec, angle);
+        this.upVec = this.rotateVector(this.upVec, this.rightVec, angle);
+        // Update pitch for display (approximate)
         this.pitch += angle;
         while (this.pitch < 0)
             this.pitch += 360;
@@ -1325,6 +1380,10 @@ export class LogoInterpreter {
         this.updateTurtleDisplay();
     }
     down(angle) {
+        // In 3D: rotate around the turtle's right vector (pitch down)
+        this.forwardVec = this.rotateVector(this.forwardVec, this.rightVec, -angle);
+        this.upVec = this.rotateVector(this.upVec, this.rightVec, -angle);
+        // Update pitch for display (approximate)
         this.pitch -= angle;
         while (this.pitch < 0)
             this.pitch += 360;
@@ -1333,6 +1392,10 @@ export class LogoInterpreter {
         this.updateTurtleDisplay();
     }
     rollRight(angle) {
+        // In 3D: rotate around the turtle's forward vector (roll right)
+        this.upVec = this.rotateVector(this.upVec, this.forwardVec, -angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.forwardVec, -angle);
+        // Update roll for display
         this.roll += angle;
         while (this.roll < 0)
             this.roll += 360;
@@ -1341,6 +1404,10 @@ export class LogoInterpreter {
         this.updateTurtleDisplay();
     }
     rollLeft(angle) {
+        // In 3D: rotate around the turtle's forward vector (roll left)
+        this.upVec = this.rotateVector(this.upVec, this.forwardVec, angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.forwardVec, angle);
+        // Update roll for display
         this.roll -= angle;
         while (this.roll < 0)
             this.roll += 360;
@@ -1926,6 +1993,7 @@ export class LogoInterpreter {
                         {
                             const { value, nextIndex } = this.getNextValue(tokens, i + 1);
                             this.pitch = value;
+                            this.recomputeDirectionVectors();
                             this.updateTurtleDisplay();
                             i = nextIndex - 1;
                         }
@@ -1934,6 +2002,7 @@ export class LogoInterpreter {
                         {
                             const { value, nextIndex } = this.getNextValue(tokens, i + 1);
                             this.roll = value;
+                            this.recomputeDirectionVectors();
                             this.updateTurtleDisplay();
                             i = nextIndex - 1;
                         }
