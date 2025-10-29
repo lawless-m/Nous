@@ -1346,8 +1346,12 @@ export class LogoInterpreter {
         this.renderer3D.setSize(600, 600);
         container.appendChild(this.renderer3D.domElement);
 
-        // Prevent browser gestures on the canvas
+        // Prevent browser gestures and context menu on the canvas
         this.renderer3D.domElement.style.touchAction = 'none';
+        this.renderer3D.domElement.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
 
         // Add orbit controls
         this.controls3D = new THREE.OrbitControls(this.camera3D, this.renderer3D.domElement);
