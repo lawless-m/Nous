@@ -75,7 +75,14 @@ REPEAT 4 [
                         </g>
                     </svg>
                     <!-- 3D Canvas (always visible) -->
-                    <div id="canvas3D" style="display: block; width: 600px; height: 600px;"></div>
+                    <div id="canvas3D" style="display: block; width: 600px; height: 600px; position: relative;">
+                        <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-size: 12px; pointer-events: none; z-index: 100;">
+                            <strong>3D View Controls:</strong><br>
+                            • Left drag: Rotate<br>
+                            • Right drag: Pan<br>
+                            • Wheel: Zoom
+                        </div>
+                    </div>
                 </div>
                 <div class="turtle-info">
                     <span>Position: (<span id="turtleX">0</span>, <span id="turtleY">0</span><span id="turtleZContainer">, <span id="turtleZ">0</span></span>)</span>

@@ -1346,9 +1346,17 @@ export class LogoInterpreter {
         this.renderer3D.setSize(600, 600);
         container.appendChild(this.renderer3D.domElement);
 
+        // Prevent browser gestures on the canvas
+        this.renderer3D.domElement.style.touchAction = 'none';
+
         // Add orbit controls
         this.controls3D = new THREE.OrbitControls(this.camera3D, this.renderer3D.domElement);
         this.controls3D.enableDamping = true;
+        this.controls3D.dampingFactor = 0.05;
+        this.controls3D.screenSpacePanning = false;
+        this.controls3D.minDistance = 50;
+        this.controls3D.maxDistance = 2000;
+        this.controls3D.maxPolarAngle = Math.PI; // Allow full rotation
 
         // Add grid and axes
         const gridHelper = new THREE.GridHelper(1000, 20);
