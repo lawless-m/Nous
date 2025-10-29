@@ -1,0 +1,110 @@
+; Simple Cube Test
+; Draw a cube using BEGINFACE/ENDFACE for each face
+
+CLEAR
+HOME
+
+PRINT "Drawing a simple cube..."
+
+; Face size
+MAKE "size 100
+
+; Bottom face (on XY plane at Z=0)
+PRINT "Bottom face..."
+SETPENRGB 255 0 0  ; Red
+SETXYZ 0 0 0
+SETHEADING 0
+SETPITCH 0
+SETROLL 0
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+; Top face (on XY plane at Z=100)
+PRINT "Top face..."
+SETPENRGB 0 255 0  ; Green
+SETXYZ 0 0 :size
+SETHEADING 0
+SETPITCH 0
+SETROLL 0
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+; Front face (on XZ plane, facing +Y)
+PRINT "Front face..."
+SETPENRGB 0 0 255  ; Blue
+SETXYZ 0 0 0
+SETHEADING 0
+SETPITCH 90  ; Pitch up to draw on XZ plane
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+; Back face (on XZ plane, facing -Y)
+PRINT "Back face..."
+SETPENRGB 255 255 0  ; Yellow
+SETXYZ 0 :size 0
+SETHEADING 0
+SETPITCH 90
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+; Left face (on YZ plane, facing +X)
+PRINT "Left face..."
+SETPENRGB 255 0 255  ; Magenta
+SETXYZ 0 0 0
+SETHEADING 90
+SETPITCH 90
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+; Right face (on YZ plane, facing -X)
+PRINT "Right face..."
+SETPENRGB 0 255 255  ; Cyan
+SETXYZ :size 0 0
+SETHEADING 90
+SETPITCH 90
+BEGINFACE
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+LEFT 90
+FORWARD :size
+ENDFACE
+
+PRINT "Cube complete! Rotate the view to see all faces."
