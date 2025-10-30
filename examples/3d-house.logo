@@ -8,39 +8,41 @@ HOME
 PRINT "Building a 3D house with BEGINFACE/ENDFACE..."
 
 ; ======================================
-; Helper procedure to create a vertical rectangle face
-; Assumes turtle is already positioned and oriented
+; Helper: Draw vertical rectangle (when pitched up 90)
+; Use RIGHT instead of LEFT because up-vector points backward
 ; ======================================
-TO VRECTFACE :width :height
+TO VRECT :width :height
     BEGINFACE
     PENDOWN
     FORWARD :height
-    LEFT 90
+    RIGHT 90
     FORWARD :width
-    LEFT 90
+    RIGHT 90
     FORWARD :height
-    LEFT 90
+    RIGHT 90
     FORWARD :width
     ENDFACE
+    PENUP
 END
 
 ; ======================================
-; 1. Build the Floor (horizontal rectangle in XZ plane)
+; 1. Build the Floor (horizontal in XZ plane)
 ; ======================================
 PRINT "Building floor..."
 SETPENRGB 100 100 100  ; Gray floor
-SETXYZ 0 0 0
+SETXYZ -100 0 -100
 SETHEADING 0
 PENDOWN
 BEGINFACE
-FORWARD 200
+FORWARD 200  ; +Z
 LEFT 90
-FORWARD 200
+FORWARD 200  ; +X
 LEFT 90
-FORWARD 200
+FORWARD 200  ; -Z
 LEFT 90
-FORWARD 200
+FORWARD 200  ; -X
 ENDFACE
+PENUP
 
 ; ======================================
 ; 2. Build Four Walls
@@ -48,53 +50,39 @@ ENDFACE
 PRINT "Building walls..."
 SETPENRGB 200 150 100  ; Tan walls
 
-; Front wall (facing -Z, in XY plane at Z=-100)
+; Front wall (in XY plane at Z=-100)
 SETXYZ -100 0 -100
-SETHEADING 90  ; Facing +X (right)
-UP 90  ; Now facing +Y (up)
-VRECTFACE 200 150
+SETHEADING 90  ; Face +X (right)
+UP 90  ; Face +Y (up)
+VRECT 200 150
 
-; Back wall (facing +Z, in XY plane at Z=100)
+; Back wall (in XY plane at Z=100)
 SETXYZ -100 0 100
-SETHEADING 90  ; Facing +X (right)
-DOWN 90  ; Now facing -Y (down), so we draw upward correctly
-DOWN 90  ; Actually facing -Z now... let me reconsider
-; Better approach: position and orient explicitly
-SETXYZ -100 0 100
-SETHEADING 90
-UP 90
-VRECTFACE 200 150
+SETHEADING 90  ; Face +X (right)
+UP 90  ; Face +Y (up)
+VRECT 200 150
 
-; Left wall (facing -X, in YZ plane at X=-100)
+; Left wall (in YZ plane at X=-100)
 SETXYZ -100 0 -100
-SETHEADING 0  ; Facing -Z (forward)
-UP 90  ; Now facing +Y (up)
-VRECTFACE 200 150
+SETHEADING 0  ; Face +Z (forward)
+UP 90  ; Face +Y (up)
+VRECT 200 150
 
-; Right wall (facing +X, in YZ plane at X=100)
+; Right wall (in YZ plane at X=100)
 SETXYZ 100 0 -100
-SETHEADING 180  ; Facing +Z (back)
-UP 90  ; Now facing +Y (up)
-VRECTFACE 200 150
+SETHEADING 180  ; Face -Z (backward)
+UP 90  ; Face +Y (up)
+VRECT 200 150
 
 ; ======================================
-; 3. Add Door (on right wall)
+; 3. Add Door (on front wall at Z=-100)
 ; ======================================
 PRINT "Adding door..."
 SETPENRGB 80 40 20  ; Brown door
-SETXYZ 101 0 -30  ; Slightly outside right wall, centered
-SETHEADING 180
+SETXYZ -30 0 -101  ; Slightly outside front wall
+SETHEADING 90
 UP 90
-BEGINFACE
-PENDOWN
-FORWARD 80
-LEFT 90
-FORWARD 60
-LEFT 90
-FORWARD 80
-LEFT 90
-FORWARD 60
-ENDFACE
+VRECT 60 80
 
 ; ======================================
 ; 4. Add Windows
@@ -102,115 +90,98 @@ ENDFACE
 PRINT "Adding windows..."
 SETPENRGB 150 200 255  ; Light blue glass
 
-; Front wall window (left)
-SETXYZ -60 90 -101
+; Front wall - left window
+SETXYZ -70 90 -101
 SETHEADING 90
 UP 90
-BEGINFACE
-PENDOWN
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
+VRECT 40 40
 
-; Front wall window (right)
-SETXYZ 20 90 -101
+; Front wall - right window
+SETXYZ 30 90 -101
 SETHEADING 90
 UP 90
-BEGINFACE
-PENDOWN
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
+VRECT 40 40
 
 ; Left wall window
 SETXYZ -101 90 -20
 SETHEADING 0
 UP 90
-BEGINFACE
-PENDOWN
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
+VRECT 40 40
+
+; Back wall window
+SETXYZ -20 90 101
+SETHEADING 90
+UP 90
+VRECT 40 40
 
 ; ======================================
-; 5. Build Roof (simple peaked roof)
+; 5. Build Roof - triangular gables
 ; ======================================
 PRINT "Building roof..."
 SETPENRGB 150 50 50  ; Dark red roof
 
-; Front triangular gable (at Z=-100)
+; Front gable (triangle at Z=-100)
 SETXYZ -100 150 -100
-SETHEADING 90  ; Facing +X
-UP 90  ; Facing +Y (up)
+SETHEADING 90  ; Face +X
+UP 90
 BEGINFACE
 PENDOWN
-FORWARD 200  ; Across the width
-LEFT 135
-FORWARD 141.4  ; Diagonal to peak (100 * sqrt(2))
-LEFT 90
-FORWARD 141.4  ; Back down
+FORWARD 100  ; Up to peak
+RIGHT 135
+FORWARD 141.4  ; Down slope (100*sqrt(2))
+RIGHT 90
+FORWARD 141.4  ; Down other slope
 ENDFACE
+PENUP
 
-; Back triangular gable (at Z=100)
+; Back gable (triangle at Z=100)
 SETXYZ -100 150 100
 SETHEADING 90
 UP 90
 BEGINFACE
 PENDOWN
-FORWARD 200
-LEFT 135
+FORWARD 100
+RIGHT 135
 FORWARD 141.4
-LEFT 90
+RIGHT 90
 FORWARD 141.4
 ENDFACE
+PENUP
 
 ; Left roof slope
 SETPENRGB 180 60 60  ; Lighter red
 SETXYZ -100 150 -100
-SETHEADING 0  ; Facing -Z (forward)
-LEFT 45  ; Rotate to face the slope direction
-UP 45  ; Pitch up to match roof angle
+SETHEADING 0  ; Face +Z
+LEFT 45  ; Angle toward peak
+UP 45  ; Slope up
 BEGINFACE
 PENDOWN
-FORWARD 200  ; Along the Z axis
-LEFT 90
-FORWARD 141.4  ; Sloped length
-LEFT 90
+FORWARD 200  ; Length along Z
+RIGHT 90
+FORWARD 141.4  ; Sloped width
+RIGHT 90
 FORWARD 200
-LEFT 90
+RIGHT 90
 FORWARD 141.4
 ENDFACE
+PENUP
 
 ; Right roof slope
 SETXYZ 100 150 -100
-SETHEADING 0
-RIGHT 45
-UP 45
+SETHEADING 0  ; Face +Z
+RIGHT 45  ; Angle toward peak (opposite side)
+UP 45  ; Slope up
 BEGINFACE
 PENDOWN
 FORWARD 200
-LEFT 90
+RIGHT 90
 FORWARD 141.4
-LEFT 90
+RIGHT 90
 FORWARD 200
-LEFT 90
+RIGHT 90
 FORWARD 141.4
 ENDFACE
+PENUP
 
 ; ======================================
 ; Finished!
@@ -220,9 +191,10 @@ PRINT ""
 PRINT "=== 3D House Complete! ==="
 PRINT ""
 PRINT ["Features:"]
-PRINT ["- Floor and 4 walls"]
-PRINT ["- Peaked roof with gables"]
-PRINT ["- Door and 3 windows"]
+PRINT ["- Floor (200x200)"]
+PRINT ["- 4 walls (200 wide x 150 tall)"]
+PRINT ["- Peaked roof with triangular gables"]
+PRINT ["- Door and 4 windows"]
 PRINT ""
 PRINT ["Use mouse to rotate view:"]
 PRINT ["- Left drag: Rotate"]
