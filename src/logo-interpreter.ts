@@ -100,9 +100,10 @@ export class LogoInterpreter {
         this.roll = 0; // 3D rotation around forward axis
 
         // 3D orientation vectors (for proper turtle rotation in 3D)
-        // Initialize based on heading=90, pitch=0, roll=0 (facing +Z)
-        this.forwardVec = [0, 0, 1];  // facing +Z initially
-        this.upVec = [0, 1, 0];       // up is +Y
+        // Initialize based on heading=90, pitch=0, roll=0 (facing +Y to match visual)
+        // The turtle cone points along +Y, and heading=90 with -90 visual offset results in pointing +Y
+        this.forwardVec = [0, 1, 0];  // facing +Y initially (up)
+        this.upVec = [0, 0, 1];       // up is +Z
         this.rightVec = [1, 0, 0];    // right is +X
 
         this.penDown = true;
@@ -337,21 +338,22 @@ export class LogoInterpreter {
         const rollRad = this.roll * Math.PI / 180;
 
         // Start with base vectors
-        // Heading 90 = facing +Z, heading 0 = facing +X
+        // Heading 90 = facing +Y (up), heading 0 = facing +X (right)
+        // This matches the visual orientation with the -90 offset
         const baseForward = [
             Math.cos(headingRad),
-            0,
-            Math.sin(headingRad)
+            Math.sin(headingRad),
+            0
         ];
 
         // Apply pitch (rotate around right axis)
         const baseRight = [
             -Math.sin(headingRad),
-            0,
-            Math.cos(headingRad)
+            Math.cos(headingRad),
+            0
         ];
         this.forwardVec = this.rotateVector(baseForward, baseRight, this.pitch);
-        let upVec = [0, 1, 0];  // Start with world up
+        let upVec = [0, 0, 1];  // Start with world up as +Z
         upVec = this.rotateVector(upVec, baseRight, this.pitch);
 
         // Apply roll (rotate around forward)
