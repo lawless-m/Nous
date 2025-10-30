@@ -1,0 +1,54 @@
+name: Build TypeScript
+
+on:
+  push:
+    branches: [ main, 3d, 'claude/**' ]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'tsconfig.json'
+  pull_request:
+    branches: [ main, 3d ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Check for changes
+      id: verify_diff
+      run: |
+        git diff --quiet dist/ || echo "changed=true" >> $GITHUB_OUTPUT
+
+    - name: Commit built files
+      if: steps.verify_diff.outputs.changed == 'true' && github.event_name == 'push'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add dist/
+        git commit -m "Auto-build TypeScript [skip ci]" || exit 0
+
+    - name: Push changes
+      if: steps.verify_diff.outputs.changed == 'true' && github.event_name == 'push'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}

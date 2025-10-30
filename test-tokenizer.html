@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tokenizer Test</title>
+</head>
+<body>
+    <h1>Tokenizer Test</h1>
+    <textarea id="code" rows="10" cols="80">
+PRINT "This is a long message with more than twenty characters"
+PRINT "Short"
+SETPENRGB 255 0 0
+</textarea>
+    <br>
+    <button onclick="testTokenize()">Test Tokenize</button>
+    <pre id="output"></pre>
+
+    <script type="module">
+        import { Tokenizer } from './dist/tokenizer.js';
+
+        window.testTokenize = function() {
+            const code = document.getElementById('code').value;
+            const tokenizer = new Tokenizer();
+            const result = tokenizer.tokenize(code);
+
+            const output = document.getElementById('output');
+            output.textContent = 'Tokens:\n' + JSON.stringify(result.tokens, null, 2);
+        };
+    </script>
+</body>
+</html>

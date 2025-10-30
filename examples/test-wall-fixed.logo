@@ -1,0 +1,59 @@
+; Simple wall test - FIXED VERSION
+; Draw one vertical wall correctly
+; Three.js coordinates: X=red (left/right), Y=green (up/down), Z=blue (forward/back)
+
+CLEAR
+HOME
+
+PRINT "Drawing a simple vertical wall (FIXED)..."
+PRINT ""
+
+; Draw floor first for reference (gray square on ground)
+SETPENRGB 100 100 100
+SETXYZ -50 0 -50
+SETHEADING 0
+PENDOWN
+BEGINFACE
+FORWARD 100  ; Forward in +Z direction
+LEFT 90
+FORWARD 100  ; Now in +X direction
+LEFT 90
+FORWARD 100  ; Back in -Z direction
+LEFT 90
+FORWARD 100  ; Back in -X direction
+ENDFACE
+PENUP
+
+PRINT "Floor drawn (100x100 square on ground)"
+PRINT ""
+
+; Draw vertical wall using RIGHT instead of LEFT after pitching up
+PRINT "Drawing vertical wall (using RIGHT turns)..."
+SETPENRGB 200 150 100  ; Tan color
+SETXYZ -50 0 0  ; Start at bottom-left of wall
+SETHEADING 90   ; Face right (+X direction)
+UP 90           ; Pitch up to face +Y (vertical)
+
+PRINT ["Starting at X:" XCOR " Y:" YCOR " Z:" ZCOR]
+
+BEGINFACE
+PENDOWN
+FORWARD 80      ; Up to Y=80
+PRINT ["After up: X:" XCOR " Y:" YCOR " Z:" ZCOR]
+
+RIGHT 90        ; Turn to face +X (right) - using RIGHT not LEFT!
+FORWARD 100     ; Go right to X=50
+PRINT ["After right: X:" XCOR " Y:" YCOR " Z:" ZCOR]
+
+RIGHT 90        ; Turn to face -Y (down)
+FORWARD 80      ; Go down to Y=0
+PRINT ["After down: X:" XCOR " Y:" YCOR " Z:" ZCOR]
+
+RIGHT 90        ; Turn to face -X (left)
+FORWARD 100     ; Go left back to X=-50
+PRINT ["After left: X:" XCOR " Y:" YCOR " Z:" ZCOR]
+ENDFACE
+
+PRINT ""
+PRINT "Wall complete!"
+PRINT "Should be: 100 wide (X=-50 to 50), 80 tall (Y=0 to 80), at Z=0"

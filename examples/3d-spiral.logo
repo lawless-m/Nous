@@ -1,0 +1,40 @@
+; 3D Spiral Example
+; Demonstrates 3D movement with ZCOR
+
+CLEAR
+HOME
+
+; Create a 3D spiral going upward
+REPEAT 36 [
+    FORWARD 20
+    UP 10        ; Pitch up slightly
+    RIGHT 10     ; Turn right
+
+    ; Print position every 6 iterations
+    IF (REPCOUNT % 6) = 0 [
+        PRINT "Position:"
+        PRINT XCOR
+        PRINT YCOR
+        PRINT ZCOR
+    ]
+]
+
+; Return to start and create a different spiral
+HOME
+PENUP
+FORWARD 100
+PENDOWN
+
+; Spiral with roll
+REPEAT 36 [
+    FORWARD 15
+    DOWN 5       ; Pitch down
+    ROLLRIGHT 15 ; Roll right
+    LEFT 10      ; Turn left
+]
+
+PRINT "Final position:"
+PRINT XCOR
+PRINT YCOR
+PRINT ZCOR
+PRINT "3D spiral complete!"

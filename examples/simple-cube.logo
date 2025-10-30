@@ -1,0 +1,85 @@
+; Simple Cube Test
+; Draw a cube using BEGINFACE/ENDFACE
+; Three.js coordinates: X=red (left/right), Y=green (up/down), Z=blue (forward/back)
+
+CLEAR
+HOME
+
+PRINT "Drawing cube with 6 colored faces..."
+
+MAKE "s 100  ; Cube size
+
+; Bottom face (Y=0, red)
+PRINT "Bottom..."
+SETPENRGB 255 0 0
+SETXYZ 0 0 0
+BEGINFACE
+PENDOWN
+SETXYZ :s 0 0
+SETXYZ :s 0 :s
+SETXYZ 0 0 :s
+SETXYZ 0 0 0
+ENDFACE
+
+; Top face (Y=100, green)
+PRINT "Top..."
+SETPENRGB 0 255 0
+SETXYZ 0 :s 0
+BEGINFACE
+PENDOWN
+SETXYZ :s :s 0
+SETXYZ :s :s :s
+SETXYZ 0 :s :s
+SETXYZ 0 :s 0
+ENDFACE
+
+; Front face (Z=0, blue)
+PRINT "Front..."
+SETPENRGB 0 0 255
+SETXYZ 0 0 0
+BEGINFACE
+PENDOWN
+SETXYZ :s 0 0
+SETXYZ :s :s 0
+SETXYZ 0 :s 0
+SETXYZ 0 0 0
+ENDFACE
+
+; Back face (Z=100, yellow)
+PRINT "Back..."
+SETPENRGB 255 255 0
+SETXYZ 0 0 :s
+BEGINFACE
+PENDOWN
+SETXYZ :s 0 :s
+SETXYZ :s :s :s
+SETXYZ 0 :s :s
+SETXYZ 0 0 :s
+ENDFACE
+
+; Left face (X=0, magenta)
+PRINT "Left..."
+SETPENRGB 255 0 255
+SETXYZ 0 0 0
+BEGINFACE
+PENDOWN
+SETXYZ 0 0 :s
+SETXYZ 0 :s :s
+SETXYZ 0 :s 0
+SETXYZ 0 0 0
+ENDFACE
+
+; Right face (X=100, cyan)
+PRINT "Right..."
+SETPENRGB 0 255 255
+SETXYZ :s 0 0
+BEGINFACE
+PENDOWN
+SETXYZ :s 0 :s
+SETXYZ :s :s :s
+SETXYZ :s :s 0
+SETXYZ :s 0 0
+ENDFACE
+
+PRINT "Cube complete! You should see 6 colored square faces."
+PRINT "Rotate with left-drag to view from all angles."

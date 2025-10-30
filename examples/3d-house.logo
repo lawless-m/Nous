@@ -1,0 +1,202 @@
+; 3D House using BEGINFACE/ENDFACE
+; Build a complete 3D house with walls, roof, door, and windows
+; Three.js coordinates: X=red (left/right), Y=green (up/down), Z=blue (forward/back)
+
+CLEAR
+HOME
+
+PRINT "Building a 3D house with BEGINFACE/ENDFACE..."
+
+; ======================================
+; Helper: Draw vertical rectangle (when pitched up 90)
+; Use RIGHT instead of LEFT because up-vector points backward
+; ======================================
+TO VRECT :width :height
+    BEGINFACE
+    PENDOWN
+    FORWARD :height
+    RIGHT 90
+    FORWARD :width
+    RIGHT 90
+    FORWARD :height
+    RIGHT 90
+    FORWARD :width
+    ENDFACE
+    PENUP
+END
+
+; ======================================
+; 1. Build the Floor (horizontal in XZ plane)
+; ======================================
+PRINT "Building floor..."
+SETPENRGB 100 100 100  ; Gray floor
+SETXYZ -100 0 -100
+SETHEADING 0
+PENDOWN
+BEGINFACE
+FORWARD 200  ; +Z
+LEFT 90
+FORWARD 200  ; +X
+LEFT 90
+FORWARD 200  ; -Z
+LEFT 90
+FORWARD 200  ; -X
+ENDFACE
+PENUP
+
+; ======================================
+; 2. Build Four Walls
+; ======================================
+PRINT "Building walls..."
+SETPENRGB 200 150 100  ; Tan walls
+
+; Front wall (in XY plane at Z=-100)
+SETXYZ -100 0 -100
+SETHEADING 90  ; Face +X (right)
+UP 90  ; Face +Y (up)
+VRECT 200 150
+
+; Back wall (in XY plane at Z=100)
+SETXYZ -100 0 100
+SETHEADING 90  ; Face +X (right)
+UP 90  ; Face +Y (up)
+VRECT 200 150
+
+; Left wall (in YZ plane at X=-100)
+SETXYZ -100 0 -100
+SETHEADING 0  ; Face +Z (forward)
+UP 90  ; Face +Y (up)
+VRECT 200 150
+
+; Right wall (in YZ plane at X=100)
+SETXYZ 100 0 -100
+SETHEADING 180  ; Face -Z (backward)
+UP 90  ; Face +Y (up)
+VRECT 200 150
+
+; ======================================
+; 3. Add Door (on front wall at Z=-100)
+; ======================================
+PRINT "Adding door..."
+SETPENRGB 80 40 20  ; Brown door
+SETXYZ -30 0 -101  ; Slightly outside front wall
+SETHEADING 90
+UP 90
+VRECT 60 80
+
+; ======================================
+; 4. Add Windows
+; ======================================
+PRINT "Adding windows..."
+SETPENRGB 150 200 255  ; Light blue glass
+
+; Front wall - left window
+SETXYZ -70 90 -101
+SETHEADING 90
+UP 90
+VRECT 40 40
+
+; Front wall - right window
+SETXYZ 30 90 -101
+SETHEADING 90
+UP 90
+VRECT 40 40
+
+; Left wall window
+SETXYZ -101 90 -20
+SETHEADING 0
+UP 90
+VRECT 40 40
+
+; Back wall window
+SETXYZ -20 90 101
+SETHEADING 90
+UP 90
+VRECT 40 40
+
+; ======================================
+; 5. Build Roof - triangular gables
+; ======================================
+PRINT "Building roof..."
+SETPENRGB 150 50 50  ; Dark red roof
+
+; Front gable (triangle at Z=-100)
+SETXYZ -100 150 -100
+SETHEADING 90  ; Face +X
+UP 90
+BEGINFACE
+PENDOWN
+FORWARD 100  ; Up to peak
+RIGHT 135
+FORWARD 141.4  ; Down slope (100*sqrt(2))
+RIGHT 90
+FORWARD 141.4  ; Down other slope
+ENDFACE
+PENUP
+
+; Back gable (triangle at Z=100)
+SETXYZ -100 150 100
+SETHEADING 90
+UP 90
+BEGINFACE
+PENDOWN
+FORWARD 100
+RIGHT 135
+FORWARD 141.4
+RIGHT 90
+FORWARD 141.4
+ENDFACE
+PENUP
+
+; Left roof slope
+SETPENRGB 180 60 60  ; Lighter red
+SETXYZ -100 150 -100
+SETHEADING 0  ; Face +Z
+LEFT 45  ; Angle toward peak
+UP 45  ; Slope up
+BEGINFACE
+PENDOWN
+FORWARD 200  ; Length along Z
+RIGHT 90
+FORWARD 141.4  ; Sloped width
+RIGHT 90
+FORWARD 200
+RIGHT 90
+FORWARD 141.4
+ENDFACE
+PENUP
+
+; Right roof slope
+SETXYZ 100 150 -100
+SETHEADING 0  ; Face +Z
+RIGHT 45  ; Angle toward peak (opposite side)
+UP 45  ; Slope up
+BEGINFACE
+PENDOWN
+FORWARD 200
+RIGHT 90
+FORWARD 141.4
+RIGHT 90
+FORWARD 200
+RIGHT 90
+FORWARD 141.4
+ENDFACE
+PENUP
+
+; ======================================
+; Finished!
+; ======================================
+HOME
+PRINT ""
+PRINT "=== 3D House Complete! ==="
+PRINT ""
+PRINT ["Features:"]
+PRINT ["- Floor (200x200)"]
+PRINT ["- 4 walls (200 wide x 150 tall)"]
+PRINT ["- Peaked roof with triangular gables"]
+PRINT ["- Door and 4 windows"]
+PRINT ""
+PRINT ["Use mouse to rotate view:"]
+PRINT ["- Left drag: Rotate"]
+PRINT ["- Right/Middle drag: Pan"]
+PRINT ["- Wheel: Zoom"]

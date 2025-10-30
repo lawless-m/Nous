@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Tokenizer</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        #output { white-space: pre-wrap; background: #f0f0f0; padding: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h2>Tokenizer Debug</h2>
+    <div id="output">Loading...</div>
+
+    <script type="module">
+        import { LogoInterpreter } from './dist/logo-interpreter.js';
+
+        async function test() {
+            const output = document.getElementById('output');
+            const interp = new LogoInterpreter();
+
+            try {
+                // Fetch the actual problematic file
+                const response = await fetch('https://raw.githubusercontent.com/lawless-m/Nous/refs/heads/claude/session-011CUYRZgBhQETc5jeDrUX1z/examples/3d-shapes.logo');
+                const code = await response.text();
+
+                output.innerHTML = '<div class="success">File loaded successfully</div>\n\n';
+                output.innerHTML += 'First 500 characters:\n' + code.substring(0, 500) + '\n\n';
+
+                // Tokenize it
+                const tokens = interp.tokenize(code);
+
+                output.innerHTML += `Total tokens: ${tokens.length}\n\n`;
+
+                // Show first 50 tokens
+                output.innerHTML += 'First 50 tokens:\n';
+                for (let i = 0; i < Math.min(50, tokens.length); i++) {
+                    output.innerHTML += `${i}: ${JSON.stringify(tokens[i])}\n`;
+                }
+
+                // Find PRINT tokens
+                output.innerHTML += '\n\nAll PRINT commands:\n';
+                tokens.forEach((token, i) => {
+                    if (token === 'PRINT') {
+                        const next = i + 1 < tokens.length ? tokens[i + 1] : '(end)';
+                        output.innerHTML += `Token ${i}: PRINT, next token: ${JSON.stringify(next)}\n`;
+                    }
+                });
+
+                // Check for problematic tokens
+                output.innerHTML += '\n\nTokens containing "at":\n';
+                tokens.forEach((token, i) => {
+                    if (typeof token === 'string' && token.toLowerCase().includes('at')) {
+                        output.innerHTML += `Token ${i}: ${JSON.stringify(token)}\n`;
+                    }
+                });
+
+            } catch (e) {
+                output.innerHTML = '<div class="error">Error: ' + e.message + '</div>';
+                console.error(e);
+            }
+        }
+
+        test();
+    </script>
+</body>
+</html>

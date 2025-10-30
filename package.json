@@ -1,0 +1,21 @@
+{
+  "name": "nous-logo",
+  "version": "1.0.0",
+  "description": "3D Logo interpreter with TypeScript",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["logo", "turtle", "graphics", "3d"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/three": "^0.169.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "three": "^0.169.0"
+  }
+}

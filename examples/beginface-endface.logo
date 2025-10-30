@@ -1,0 +1,161 @@
+; BEGINFACE / ENDFACE Example
+; Create custom filled 3D faces and polygons
+
+CLEAR
+HOME
+
+PRINT "Creating 3D faces with BEGINFACE/ENDFACE"
+PRINT ""
+
+; ======================================
+; Example 1: Simple Triangle
+; ======================================
+PRINT "Example 1: Creating a triangle"
+SETPENRGB 255 0 0  ; Red triangle
+
+BEGINFACE
+FORWARD 100
+LEFT 120
+FORWARD 100
+LEFT 120
+FORWARD 100
+ENDFACE
+
+PRINT "Triangle created at Z:"
+PRINT ZCOR
+PRINT ""
+
+; ======================================
+; Example 2: Square Face
+; ======================================
+HOME
+SETXYZ 150 0 0
+SETPENRGB 0 255 0  ; Green square
+
+PRINT "Example 2: Creating a square"
+BEGINFACE
+FORWARD 80
+LEFT 90
+FORWARD 80
+LEFT 90
+FORWARD 80
+LEFT 90
+FORWARD 80
+ENDFACE
+
+PRINT "Square created at Z:"
+PRINT ZCOR
+PRINT ""
+
+; ======================================
+; Example 3: Pentagon (5-sided polygon)
+; ======================================
+HOME
+SETXYZ -150 0 0
+SETPENRGB 0 0 255  ; Blue pentagon
+
+PRINT "Example 3: Creating a pentagon"
+BEGINFACE
+REPEAT 5 [
+    FORWARD 60
+    LEFT 72  ; 360/5 = 72 degrees
+]
+ENDFACE
+
+PRINT "Pentagon created"
+PRINT ""
+
+; ======================================
+; Example 4: 3D Angled Face
+; ======================================
+HOME
+SETXYZ 0 150 0
+SETPENRGB 255 255 0  ; Yellow tilted triangle
+
+PRINT "Example 4: Creating a tilted 3D triangle"
+UP 30  ; Tilt upward 30 degrees
+
+BEGINFACE
+FORWARD 80
+LEFT 120
+FORWARD 80
+LEFT 120
+FORWARD 80
+ENDFACE
+
+PRINT "Tilted triangle at Z:"
+PRINT ZCOR
+PRINT ""
+
+; ======================================
+; Example 5: Complex Shape - Hexagon
+; ======================================
+HOME
+SETXYZ 0 -150 0
+SETPENRGB 255 0 255  ; Magenta hexagon
+
+PRINT "Example 5: Creating a hexagon"
+BEGINFACE
+REPEAT 6 [
+    FORWARD 50
+    LEFT 60  ; 360/6 = 60 degrees
+]
+ENDFACE
+
+PRINT "Hexagon created"
+PRINT ""
+
+; ======================================
+; Example 6: 3D Pyramid (multiple faces)
+; ======================================
+HOME
+SETXYZ 0 0 50  ; Elevated position
+SETPENRGB 200 100 50  ; Brown/orange
+
+PRINT "Example 6: Creating a pyramid from faces"
+
+; Base of pyramid (square)
+BEGINFACE
+FORWARD 60
+LEFT 90
+FORWARD 60
+LEFT 90
+FORWARD 60
+LEFT 90
+FORWARD 60
+ENDFACE
+
+; Move to corner and create triangular sides
+SETXYZ 0 0 50
+FORWARD 30  ; Move to center of base
+UP 45       ; Angle upward
+FORWARD 40  ; Move to apex
+
+; Side 1
+SETXYZ 0 0 50
+SETPENRGB 180 90 40
+BEGINFACE
+FORWARD 60
+LEFT 90
+FORWARD 60
+SETXYZ 30 30 90  ; Apex
+ENDFACE
+
+PRINT "Pyramid faces created!"
+PRINT ""
+
+; ======================================
+; IMPORTANT NOTES
+; ======================================
+PRINT ""
+PRINT "=== BEGINFACE/ENDFACE NOTES ==="
+PRINT "1. BEGINFACE starts recording vertices"
+PRINT "2. Each FORWARD adds current position to the face"
+PRINT "3. ENDFACE creates filled polygon from all vertices"
+PRINT "4. Need at least 3 vertices (triangle)"
+PRINT "5. Face uses current pen color (SETPENRGB)"
+PRINT "6. Faces are double-sided (visible from both sides)"
+PRINT "7. Works with any 3D movement (UP/DOWN/ROLL)"
+PRINT ""
+PRINT "Use mouse to rotate and explore the 3D scene!"
+PRINT "Click Export STL to save as 3D model"
