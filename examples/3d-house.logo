@@ -1,5 +1,6 @@
 ; 3D House using BEGINFACE/ENDFACE
 ; Build a complete 3D house with walls, roof, door, and windows
+; Three.js coordinates: X=red (left/right), Y=green (up/down), Z=blue (forward/back)
 
 CLEAR
 HOME
@@ -7,28 +8,39 @@ HOME
 PRINT "Building a 3D house with BEGINFACE/ENDFACE..."
 
 ; ======================================
-; Helper procedure to create a rectangle face
+; Helper procedure to create a vertical rectangle face
+; Assumes turtle is already positioned and oriented
 ; ======================================
-TO RECTFACE :width :height
+TO VRECTFACE :width :height
     BEGINFACE
-    FORWARD :width
-    LEFT 90
+    PENDOWN
     FORWARD :height
     LEFT 90
     FORWARD :width
     LEFT 90
     FORWARD :height
+    LEFT 90
+    FORWARD :width
     ENDFACE
 END
 
 ; ======================================
-; 1. Build the Floor
+; 1. Build the Floor (horizontal rectangle in XZ plane)
 ; ======================================
 PRINT "Building floor..."
 SETPENRGB 100 100 100  ; Gray floor
 SETXYZ 0 0 0
-SETHEADING 90
-RECTFACE 200 200
+SETHEADING 0
+PENDOWN
+BEGINFACE
+FORWARD 200
+LEFT 90
+FORWARD 200
+LEFT 90
+FORWARD 200
+LEFT 90
+FORWARD 200
+ENDFACE
 
 ; ======================================
 ; 2. Build Four Walls
@@ -36,83 +48,130 @@ RECTFACE 200 200
 PRINT "Building walls..."
 SETPENRGB 200 150 100  ; Tan walls
 
-; Front wall
-SETXYZ -100 -100 0
+; Front wall (facing -Z, in XY plane at Z=-100)
+SETXYZ -100 0 -100
+SETHEADING 90  ; Facing +X (right)
+UP 90  ; Now facing +Y (up)
+VRECTFACE 200 150
+
+; Back wall (facing +Z, in XY plane at Z=100)
+SETXYZ -100 0 100
+SETHEADING 90  ; Facing +X (right)
+DOWN 90  ; Now facing -Y (down), so we draw upward correctly
+DOWN 90  ; Actually facing -Z now... let me reconsider
+; Better approach: position and orient explicitly
+SETXYZ -100 0 100
 SETHEADING 90
-UP 90  ; Face upward
-RECTFACE 200 150
-
-; Back wall
-SETXYZ -100 100 0
-SETHEADING 90
 UP 90
-RECTFACE 200 150
+VRECTFACE 200 150
 
-; Left wall
-SETXYZ -100 -100 0
-SETHEADING 0
-UP 90
-RECTFACE 200 150
+; Left wall (facing -X, in YZ plane at X=-100)
+SETXYZ -100 0 -100
+SETHEADING 0  ; Facing -Z (forward)
+UP 90  ; Now facing +Y (up)
+VRECTFACE 200 150
 
-; Right wall (with door opening - split wall)
-SETXYZ 100 -100 0
-SETHEADING 0
-UP 90
+; Right wall (facing +X, in YZ plane at X=100)
+SETXYZ 100 0 -100
+SETHEADING 180  ; Facing +Z (back)
+UP 90  ; Now facing +Y (up)
+VRECTFACE 200 150
 
-; Right wall - lower left section
-BEGINFACE
-FORWARD 80
-LEFT 90
-FORWARD 80
-LEFT 90
-FORWARD 80
-LEFT 90
-FORWARD 80
-ENDFACE
-
-; Right wall - upper section
-SETXYZ 100 -100 80
-SETHEADING 0
-UP 90
-RECTFACE 200 70
-
-; Right wall - lower right section
-SETXYZ 100 50 0
-SETHEADING 0
+; ======================================
+; 3. Add Door (on right wall)
+; ======================================
+PRINT "Adding door..."
+SETPENRGB 80 40 20  ; Brown door
+SETXYZ 101 0 -30  ; Slightly outside right wall, centered
+SETHEADING 180
 UP 90
 BEGINFACE
-FORWARD 50
+PENDOWN
+FORWARD 80
+LEFT 90
+FORWARD 60
 LEFT 90
 FORWARD 80
 LEFT 90
-FORWARD 50
-LEFT 90
-FORWARD 80
+FORWARD 60
 ENDFACE
 
 ; ======================================
-; 3. Build Roof (two triangular ends + two slopes)
+; 4. Add Windows
+; ======================================
+PRINT "Adding windows..."
+SETPENRGB 150 200 255  ; Light blue glass
+
+; Front wall window (left)
+SETXYZ -60 90 -101
+SETHEADING 90
+UP 90
+BEGINFACE
+PENDOWN
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; Front wall window (right)
+SETXYZ 20 90 -101
+SETHEADING 90
+UP 90
+BEGINFACE
+PENDOWN
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; Left wall window
+SETXYZ -101 90 -20
+SETHEADING 0
+UP 90
+BEGINFACE
+PENDOWN
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+LEFT 90
+FORWARD 40
+ENDFACE
+
+; ======================================
+; 5. Build Roof (simple peaked roof)
 ; ======================================
 PRINT "Building roof..."
 SETPENRGB 150 50 50  ; Dark red roof
 
-; Front triangular gable
-SETXYZ -100 -100 150
-SETHEADING 90
-UP 90
+; Front triangular gable (at Z=-100)
+SETXYZ -100 150 -100
+SETHEADING 90  ; Facing +X
+UP 90  ; Facing +Y (up)
 BEGINFACE
-FORWARD 200         ; Base of triangle
+PENDOWN
+FORWARD 200  ; Across the width
 LEFT 135
-FORWARD 141.4       ; Hypotenuse (100*sqrt(2))
+FORWARD 141.4  ; Diagonal to peak (100 * sqrt(2))
 LEFT 90
-FORWARD 141.4       ; Other side
+FORWARD 141.4  ; Back down
 ENDFACE
 
-; Back triangular gable
-SETXYZ -100 100 150
+; Back triangular gable (at Z=100)
+SETXYZ -100 150 100
 SETHEADING 90
 UP 90
 BEGINFACE
+PENDOWN
 FORWARD 200
 LEFT 135
 FORWARD 141.4
@@ -122,11 +181,13 @@ ENDFACE
 
 ; Left roof slope
 SETPENRGB 180 60 60  ; Lighter red
-SETXYZ -100 -100 150
-SETHEADING 90
-UP 45  ; Slope angle
+SETXYZ -100 150 -100
+SETHEADING 0  ; Facing -Z (forward)
+LEFT 45  ; Rotate to face the slope direction
+UP 45  ; Pitch up to match roof angle
 BEGINFACE
-FORWARD 200
+PENDOWN
+FORWARD 200  ; Along the Z axis
 LEFT 90
 FORWARD 141.4  ; Sloped length
 LEFT 90
@@ -136,102 +197,20 @@ FORWARD 141.4
 ENDFACE
 
 ; Right roof slope
-SETXYZ -100 100 150
-SETHEADING 90
-DOWN 45  ; Opposite slope
+SETXYZ 100 150 -100
+SETHEADING 0
+RIGHT 45
+UP 45
 BEGINFACE
+PENDOWN
 FORWARD 200
-RIGHT 90
+LEFT 90
 FORWARD 141.4
-RIGHT 90
+LEFT 90
 FORWARD 200
-RIGHT 90
+LEFT 90
 FORWARD 141.4
 ENDFACE
-
-; ======================================
-; 4. Add Door
-; ======================================
-PRINT "Adding door..."
-SETPENRGB 80 40 20  ; Brown door
-SETXYZ 100 -100 5  ; Offset from wall
-SETHEADING 0
-UP 90
-BEGINFACE
-FORWARD 70
-LEFT 90
-FORWARD 75
-LEFT 90
-FORWARD 70
-LEFT 90
-FORWARD 75
-ENDFACE
-
-; ======================================
-; 5. Add Windows
-; ======================================
-PRINT "Adding windows..."
-SETPENRGB 150 200 255  ; Light blue glass
-
-; Front window 1
-SETXYZ -105 -60 80  ; Slightly outside wall
-SETHEADING 0
-UP 90
-BEGINFACE
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
-
-; Front window 2
-SETXYZ -105 20 80
-SETHEADING 0
-UP 90
-BEGINFACE
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
-
-; Side windows (left and right)
-SETXYZ -60 -105 80
-SETHEADING 90
-UP 90
-BEGINFACE
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-LEFT 90
-FORWARD 40
-ENDFACE
-
-; ======================================
-; 6. Add Chimney
-; ======================================
-PRINT "Adding chimney..."
-SETPENRGB 120 60 40  ; Brick red
-
-SETXYZ 50 50 150
-SETHEADING 90
-
-; Four sides of chimney
-REPEAT 4 [
-    UP 90
-    RECTFACE 20 60
-    DOWN 90
-    SETXYZ (XCOR + 20) YCOR ZCOR
-    RIGHT 90
-]
 
 ; ======================================
 ; Finished!
@@ -240,13 +219,12 @@ HOME
 PRINT ""
 PRINT "=== 3D House Complete! ==="
 PRINT ""
-PRINT "Features:"
-PRINT "- Floor, 4 walls with door opening"
-PRINT "- Sloped roof with gables"
-PRINT "- Door and windows"
-PRINT "- Chimney"
+PRINT ["Features:"]
+PRINT ["- Floor and 4 walls"]
+PRINT ["- Peaked roof with gables"]
+PRINT ["- Door and 3 windows"]
 PRINT ""
-PRINT "Total faces created: ~20+"
-PRINT ""
-PRINT "Use mouse to rotate view"
-PRINT "Export as STL for 3D printing!"
+PRINT ["Use mouse to rotate view:"]
+PRINT ["- Left drag: Rotate"]
+PRINT ["- Right/Middle drag: Pan"]
+PRINT ["- Wheel: Zoom"]
