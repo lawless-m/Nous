@@ -249,12 +249,17 @@ class LogoInterpreter {
 
         if (this.is3DMode) {
             // 3D movement - use heading, pitch, and roll
-            const headingRad = this.heading * Math.PI / 180;
+            // Apply same -90 offset as visual rotation to ensure movement matches visual direction
+            // The turtle cone points along +Y axis by default (upward in Three.js)
+            const headingRad = (this.heading - 90) * Math.PI / 180;
             const pitchRad = this.pitch * Math.PI / 180;
 
             // Calculate 3D direction vector
-            const dx = Math.cos(pitchRad) * Math.cos(headingRad);
-            const dy = Math.cos(pitchRad) * Math.sin(headingRad);
+            // Default direction is +Y (up), heading rotates in XY plane, pitch tilts toward +Z
+            // When heading=90, pitch=0: headingRad=0, moves along +Y (matching visual)
+            const horizontalDist = Math.cos(pitchRad);
+            const dx = horizontalDist * Math.sin(headingRad);
+            const dy = horizontalDist * Math.cos(headingRad);  // Y is the "forward" direction
             const dz = Math.sin(pitchRad);
 
             this.x += distance * dx;
