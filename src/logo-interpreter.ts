@@ -365,8 +365,8 @@ export class LogoInterpreter {
 
     left(angle) {
         // In 3D: rotate around the turtle's up vector
-        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, angle);
-        this.rightVec = this.rotateVector(this.rightVec, this.upVec, angle);
+        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, -angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.upVec, -angle);
 
         // Update heading for display (approximate)
         this.heading += angle;
@@ -378,8 +378,8 @@ export class LogoInterpreter {
 
     right(angle) {
         // In 3D: rotate around the turtle's up vector (opposite direction)
-        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, -angle);
-        this.rightVec = this.rotateVector(this.rightVec, this.upVec, -angle);
+        this.forwardVec = this.rotateVector(this.forwardVec, this.upVec, angle);
+        this.rightVec = this.rotateVector(this.rightVec, this.upVec, angle);
 
         // Update heading for display (approximate)
         this.heading -= angle;
