@@ -4,23 +4,23 @@ HOME
 
 PRINT "Starting Test 2 debug"
 PRINT "Initial position:"
-PRINT "X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 PENUP
 FORWARD 100
 PRINT "After FORWARD 100:"
-PRINT "X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["X:" XCOR " Y:" YCOR " Z:" ZCOR]
 PRINT ""
 
 PENDOWN
 SETPENRGB 0 255 0
 
 PRINT "Before UP 90:"
-PRINT "X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 UP 90
 PRINT "After UP 90 (should be facing straight up):"
-PRINT "X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["X:" XCOR " Y:" YCOR " Z:" ZCOR]
 PRINT ""
 
 PRINT "Expected square corners (in XY plane at Z=100):"
@@ -32,22 +32,22 @@ PRINT ""
 
 PRINT "Actual corners:"
 
-PRINT "Corner 1: X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["Corner 1: X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 FORWARD 50
-PRINT "Corner 2: X:" XCOR " Y:" YCOR " Z:" ZCOR
-
-LEFT 90
-FORWARD 50
-PRINT "Corner 3: X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["Corner 2: X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 LEFT 90
 FORWARD 50
-PRINT "Corner 4: X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["Corner 3: X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 LEFT 90
 FORWARD 50
-PRINT "Back to start: X:" XCOR " Y:" YCOR " Z:" ZCOR
+PRINT ["Corner 4: X:" XCOR " Y:" YCOR " Z:" ZCOR]
+
+LEFT 90
+FORWARD 50
+PRINT ["Back to start: X:" XCOR " Y:" YCOR " Z:" ZCOR]
 
 PRINT ""
 PRINT "Test complete"
