@@ -1291,11 +1291,11 @@ export class LogoInterpreter {
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(1, 1, 1);
         this.scene3D.add(directionalLight);
-        // Create turtle (simple cone pointing up)
+        // Create turtle (simple cone)
         const geometry = new THREE.ConeGeometry(5, 20, 8);
         const material = new THREE.MeshPhongMaterial({ color: 0x00aa00 });
         this.turtle3D = new THREE.Mesh(geometry, material);
-        this.turtle3D.rotation.x = Math.PI; // Point cone upward
+        // Rotation is handled by updateTurtle3D()
         this.scene3D.add(this.turtle3D);
         // Animate loop
         const animate = () => {
@@ -1362,11 +1362,14 @@ export class LogoInterpreter {
         // Update turtle position
         this.turtle3D.position.set(this.x, this.y, this.z);
         // Update turtle rotation
-        // Convert Logo angles to Three.js rotation
+        // The cone geometry points down (-Y) by default, so we need to flip it
+        // Apply rotations to match the movement direction
         const headingRad = (this.heading - 90) * Math.PI / 180;
         const pitchRad = -this.pitch * Math.PI / 180;
         const rollRad = this.roll * Math.PI / 180;
-        this.turtle3D.rotation.set(pitchRad, headingRad, rollRad);
+        // Cone points down by default, so add Math.PI to X rotation to flip it up
+        // Then apply pitch, heading (as Y rotation), and roll
+        this.turtle3D.rotation.set(Math.PI - pitchRad, headingRad, rollRad);
         this.turtle3D.visible = this.turtleVisible;
     }
     up(angle) {
